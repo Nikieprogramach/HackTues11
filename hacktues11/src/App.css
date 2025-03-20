@@ -40,6 +40,7 @@
 .search-bar-top {
   top: 20px; /* Move to the top */
   transform: translateY(0); /* Reset transform */
+  position: relative;
 }
 
 input[type = "text"] {

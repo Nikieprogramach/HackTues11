@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +8,9 @@ const App = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [sortedData, setSortedData] = useState([]);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
 
   // Mock JSON data
   const mockData = [
@@ -85,8 +88,32 @@ const App = () => {
     },
   ];
 
+  const parseDate = (dateStr) => {
+    const [day, month, year] = dateStr.split('.');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  const filterResultsByTimespan = (results) => {
+    return results.filter((order) => {
+      const orderDate = parseDate(order.date_time);
+      const from = fromDate ? new Date(fromDate) : null;
+      const to = toDate ? new Date(toDate) : null;
+
+      return (
+        (!from || orderDate >= from) && 
+        (!to || orderDate <= to) 
+      );
+    });
+  };
+
   const handleSearch = () => {
     if (searchQuery.trim()) {
+
+      if (!hasSearched) {
+        const today = new Date().toISOString().split('T')[0];
+        setFromDate('');
+        setToDate(today);
+      }
 
       const sortedData = [...mockData].sort((a, b) => {
         const dateA = new Date(a.date_time.split('.').reverse().join('-'));
@@ -94,10 +121,19 @@ const App = () => {
         return dateB - dateA;
       });
 
-      setSearchResults(sortedData);
+      setSortedData(sortedData);
+      const filteredResults = filterResultsByTimespan(sortedData);
+      setSearchResults(filteredResults);
       setHasSearched(true);
     }
   };
+
+  useEffect(() => {
+    if (hasSearched) {
+      const filteredResults = filterResultsByTimespan(sortedData);
+      setSearchResults(filteredResults);
+    }
+  }, [fromDate, toDate]);
 
   return (
     <div className="App">
@@ -124,9 +160,17 @@ const App = () => {
         <>
           <div className={`timespan-selector ${hasSearched ? 'fade-in' : ''}`}>
             <label>From:</label>
-            <input type="date" />
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+            />
             <label>To:</label>
-            <input type="date" />
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+            />
           </div>
           <div className={`content ${hasSearched ? 'fade-in' : ''}`}>
             <table>
