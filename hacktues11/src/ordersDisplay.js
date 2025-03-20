@@ -11,7 +11,7 @@ const OrdersDisplay = (props) => {
             <table>
                 <thead>
                 <tr>
-                    <th>Дата & Време</th>
+                    <th>Дата и Време</th>
                     <th>Номер на поръчкта</th>
                     <th>Продукти</th>
                     <th>Цена</th>
