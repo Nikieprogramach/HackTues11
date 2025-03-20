@@ -9,13 +9,23 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@grpc/grpc-js": "^1.13.0",
+    "@grpc/proto-loader": "^0.7.13",
+    "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.40.1",
     "express": "^4.21.2",
     "google-protobuf": "^3.21.4",
     "grpc-tools": "^1.13.0",
     "pg": "^8.14.1",
+    "protobufjs": "^7.4.0",
     "protoc-gen-js": "^3.21.4-4"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.11",
+    "drizzle-kit": "^0.30.5",
+    "tsx": "^4.19.3"
   }
 }

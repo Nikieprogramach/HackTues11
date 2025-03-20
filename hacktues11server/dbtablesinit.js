@@ -28,6 +28,7 @@ async function createTable() {
 
     // const query = `
     //     CREATE TABLE IF NOT EXISTS unconformedPurchases (
+    //     id SERIAL PRIMARY KEY,
     //     orderid INT NOT NULL,
     //     business VARCHAR(250) NOT NULL,
     //     purchaseditems TEXT NOT NULL,
@@ -36,24 +37,26 @@ async function createTable() {
     //     );
     // `;
 
-    const query = `
-        CREATE TABLE IF NOT EXISTS unconformedPayments (
-        orderid INT NOT NULL,
-        clientfirstname VARCHAR(250) NOT NULL,
-        clientlastname VARCHAR(250) NOT NULL,
-        cardnums INT NOT NULL,
-        amount DECIMAL NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-    `;
+    // const query = `
+    //     CREATE TABLE IF NOT EXISTS unconformedPayments (
+    //     id SERIAL PRIMARY KEY,
+    //     orderid INT NOT NULL,
+    //     firstname VARCHAR(250) NOT NULL,
+    //     lastname VARCHAR(250) NOT NULL,
+    //     cardnums INT NOT NULL,
+    //     amount DECIMAL NOT NULL,
+    //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    //     );
+    // `;
 
     // const query = `
     //     CREATE TABLE IF NOT EXISTS conformedPurchases (
-    //     orderid SERIAL PRIMARY KEY,
+    //     id SERIAL PRIMARY KEY,
+    //     orderid INT NOT NULL,
     //     business VARCHAR(250) NOT NULL,
     //     purchaseditems TEXT NOT NULL,
-    //     clientfirstname VARCHAR(200),
-    //     clientlastname VARCHAR(200),
+    //     firstname VARCHAR(200),
+    //     lastname VARCHAR(200),
     //     cardnumbers INT NOT NULL,
     //     amount DECIMAL NOT NULL,
     //     paymentmethod VARCHAR(100) NOT NULL,

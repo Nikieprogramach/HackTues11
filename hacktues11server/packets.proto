@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package packets; 
+
+service PacketAPI {
+  rpc QueryOrder (Order) returns (Response) {}
+  rpc QueryPayment (Payment) returns (Response) {}
+}
+
+message Response {
+  string status = 1;
+}
+
+message Product {
+  string name = 1;
+  int32 price = 2;
+}
+
+message Order {
+  int64 orderID = 1;
+  string business = 2;
+  string paymentMethod = 3;
+  double amount = 4;
+  repeated Product purchasedItems = 5;
+}
+
+message Payment {
+  int64 orderID = 1;
+  string firstname = 2;
+  string lastname = 3;
+  int64 cardnums = 4;
+  double amount = 5;
+}
