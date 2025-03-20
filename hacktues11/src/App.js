@@ -151,6 +151,7 @@ const App = () => {
     <div className="App">
       <div className={`header ${hasSearched ? 'fade-out' : ''}`}>
         <h1>NAPI</h1>
+        <h2>Администратор</h2>
       </div>
       <div className={`search-bar ${hasSearched ? 'search-bar-top' : 'search-bar-center'}`}>
         <input

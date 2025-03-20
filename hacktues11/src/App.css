@@ -9,7 +9,7 @@
 .header {
   text-align: center;
   margin-top: 20px;
-  transition: opacity 0.5s ease; /* Smooth fade-out transition */
+  transition: opacity 0.5s ease;
 }
 
 .header h1 {
@@ -17,29 +17,35 @@
   margin: 0;
 }
 
+.header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #666;
+}
+
 .fade-out {
-  opacity: 0; /* Fade out the header */
+  opacity: 0;
 }
 
 .search-bar {
-  position: fixed; /* Use fixed positioning for smooth transition */
+  position: fixed;
   width: 100%;
   text-align: center;
-  transition: all 0.5s ease; /* Smooth transition for all properties */
+  transition: all 0.5s ease;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px; /* Space between input and button */
+  gap: 10px;
 }
 
 .search-bar-center {
-  top: 50%; /* Center vertically */
-  transform: translateY(-50%); /* Adjust for exact centering */
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .search-bar-top {
-  top: 20px; /* Move to the top */
-  transform: translateY(0); /* Reset transform */
+  top: 20px;
+  transform: translateY(0);
   position: relative;
 }
 
@@ -48,7 +54,7 @@ input[type = "text"] {
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 300px; /* Adjust width as needed */
+  width: 300px;
 }
 
 button {
@@ -103,9 +109,9 @@ table th, table td {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: left;
-  word-wrap: break-word; /* Breaks long words to fit within the cell */
-  overflow-wrap: break-word; /* Ensures long words wrap to the next line */
-  white-space: normal; /* Allows text to wrap to the next line */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
   max-width: 25vw;
 }
 
