@@ -65,6 +65,15 @@ async function createTable() {
     //     );
     // `;
   
+    const query = `
+      CREATE TABLE authTokens (
+        id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL,
+        token VARCHAR(1000) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        expires_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL '1' HOUR)
+      );
+    `;
     await client.query(query);
     console.log("Table created successfully");
   } catch (err) {

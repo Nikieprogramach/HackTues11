@@ -2,9 +2,6 @@ const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const { Pool } = require('pg');
 require('dotenv').config();
-const Order = require('./packets_pb').Order;
-const Payment = require('./packets_pb').Payment;
-const Response = require('./packets_pb').Response;
 
 const PROTO_PATH = './packets.proto'
 
@@ -26,15 +23,12 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 
 async function QueryOrderHandler(call, callback){
-    console.log("order")
     const { orderID, business, paymentMethod, purchasedItems, amount } = call.request;
     var purchasedItemsString = purchasedItems.map(item => `${item.name}: ${item.price}`).join(", ");
-    console.log(orderID, business, paymentMethod, purchasedItems, amount)
     try{
         query = `SELECT * FROM unconformedpayments WHERE orderid = $1` 
         values = [orderID]
         const result = await pool.query(query, values)
-        console.log("result:", result.rows)
         if (result.rows.length > 0) {
             row = result.rows[0]
             query = `INSERT INTO conformedpurchases (orderid, business, purchaseditems, firstname, lastname, cardnumbers, paymentmethod, amount, date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP)`
@@ -65,13 +59,11 @@ async function QueryOrderHandler(call, callback){
 }
 
 async function QueryPaymentHandler(call, callback){
-    console.log("request")
     const { orderID, firstname, lastname, cardnums, amount } = call.request;
     try{
         query = `SELECT * FROM unconformedpurchases WHERE orderid = $1` 
         values = [orderID]
         const result = await pool.query(query, values)
-        console.log("result:", result.rows)
         if (result.rows.length > 0) {
             row = result.rows[0]
             query = `INSERT INTO conformedpurchases (orderid, business, purchaseditems, firstname, lastname, cardnumbers, paymentmethod, amount, date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP)`

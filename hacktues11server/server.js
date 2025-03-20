@@ -3,8 +3,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const { Pool } = require('pg');
 require('dotenv').config();
-const Order = require('./packets').Order;
-const Payment = require('./packets').Payment;
 
 app.use(express.json());
 
@@ -25,99 +23,66 @@ app.get('/getOrdersFromShop', async (req, res) => {
     res.json(result.rows)
 });
 
-// app.post('/queryPurchase', async (req, res) => {
-//     const {
-//         order,
-//     } = req.body
-//     deserializedOrder = Order.deserializeBinary(order)
-//     console.log(deserializedOrder)
-//     orderID = deserializedOrder.getOrderid()
-//     business = deserializedOrder.getBusiness()
-//     paymentMethod = deserializedOrder.getPaymentmethod()
-//     purchasedItems = deserializedOrder.getPurchaseditemsList()
-//     purchasedItemsString = purchasedItems.map(item => `${item.name}: ${item.price}`).join(", ");
-//     amount = deserializedOrder.getAmount()
-//     try{
-//         query = `SELECT * FROM unconformedPayments WHERE orderid = $1` 
-//         values = [orderID]
-//         const result = await pool.query(query, values)
-//         if (result.rows.length > 0) {
-//             row = result.rows[0]
-//             query = `INSERT INTO conformedPurchases (orderid, business, purchaseditems, clientfirstname, clientlastname, cardnumbers, paymentmethod, amount, date) VALUES ('$1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP)`
-//             values = [orderID, business, purchasedItemsString, row.clientfirstname, row.clientlastname, row.cardnums, paymentMethod, amount]
-//             await pool.query(query, values);
-//             await pool.query(`DELETE FROM unconformedPayments WHERE orderid = ${orderID}`);
-//             res.json("purchase conformed successful")
-//         }else{
-//             if(paymentMethod === "cash"){
-//                 var values = [orderID, business, purchasedItemsString, paymentMethod, amount]
-//                 query = `INSERT INTO conformedPurchases (orderid, business, purchaseditems, paymentmethod, amount) VALUES ('$1, $2, $3, $4, $5)`
-//                 try{
-//                     pool.query(query, values);
-//                 }catch{
-//                     console.log("Error uploading to db")
-//                 }
-//             }else if(paymentMethod === "card" || paymentMethod === "online"){
-//                 var values = [orderID, business, purchasedItemsString, paymentMethod]
-//                 query = `INSERT INTO unconformedPurchases (orderid, business, purchaseditems, paymentmethod) VALUES ('$1, $2, $3, $4)`
-//                 try{
-//                     pool.query(query, values);
-//                 }catch{
-//                     console.log("Error uploading to db")
-//                 }
-//             }else{
+app.post('/login', async (req, res) => {
+    const {
+        username,
+        password
+    } = req.body;
 
-//             }
-//             res.json("purchase queried successful")
-//         }
-//     }catch{
-//         console.log("Error")
-//         res.json("error")
-//     }    
+    const cleanupQuery = `SELECT * FROM authTokens WHERE CURRENT_TIMESTAMP > expires_at`
+    const ress = await pool.query(cleanupQuery);
+    console.log(ress.rows)
+    for(var i = 0; i < ress.rows.length; i++){
+        await pool.query(`DELETE FROM authTokens WHERE id = ${ress.rows[i].id}`);
+    }
 
-// });
+    const query = `SELECT * FROM users WHERE name = $1`;
+    const values = [username];  
+    try {
+        const result = await pool.query(query, values);
+        if (result.rows.length > 0) {
+        const heshPass = result.rows[0].password;
+        if(bcrypt.compareSync(password, heshPass)){
+            var token = generateToken()
+            try {
+            const query1 = `INSERT INTO authtokens (user_id, token) VALUES (${result.rows[0].id}, '${token}')`;
+            await pool.query(query1)
+            } catch (error) {
+                console.error("Database Insert Error:", error);
+            }
+            res.json({"token": token})
+        }else{
+            res.status(401).json({ error: "Invalid password" });
+        }
+        } else {
+        res.status(401).json({ error: "Invalid username or password" });
+        }
+    } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to login" });
+    }
+});
 
-// app.post('/conformPurchaceCard', async (req, res) => {
-//     const {
-//         payment,
-//     } = req.body
-//     deserializedPayment = Payment.deserializeBinary(payment)
-//     orderID = deserializedPayment.getOrderid()
-//     firstname = deserializedPayment.getFirstname()
-//     lastname = deserializedPayment.getLastname()
-//     cardnums = deserializedPayment.getCardnums()
-//     amount = deserializedPayment.getAmount()
-//     try{
-//         query = `SELECT * FROM unconformedPurchases WHERE orderid = $1` 
-//         values = [orderID]
-//         const result = await pool.query(query, values)
-//         if (result.rows.length > 0) {
-//             row = result.rows[0]
-//             query = `INSERT INTO conformedPurchases (orderid, business, purchaseditems, clientfirstname, clientlastname, cardnumbers, paymentmethod, amount, date) VALUES ('$1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP)`
-//             values = [orderID, row.business, row.purchaseditems, firstname, lastname, cardnums, row.paymentmethod, amount]
-//             await pool.query(query, values);
-//             await pool.query(`DELETE FROM unconformedPurchases WHERE orderid = ${orderID}`);
-//             res.json("payment conformed successful")
-//         }else{
-//             console.log("Order not found")
-//             var values = [orderID, firstname, lastname, cardnums, amount]
-//             query = `INSERT INTO unconformedPayments (orderid, clientfirstname, clientlastname, cardnums, amount) VALUES ('$1, $2, $3, $4, $5)`
-//             try{
-//                 pool.query(query, values);
-//             }catch{
-//                 console.log("Error uploading to db")
-//             }
-//             res.json("payment queried successful")
-//         }
-//     }catch{
-//         console.log("Error while trying to fetch db")
-//         res.json("Error while trying to fetch db")
-//     }
-// });
+app.post('/verifytoken', async (req, res) => {
+    const {
+        token
+    } = req.body;
 
-// app.post('/conformPurchaceCard', async (req, res) => {
-//     res.send('Hello, World!');
-// });
+    try {
+        const query = `SELECT * FROM authtokens WHERE token = $1 AND CURRENT_TIMESTAMP < expires_at`;
+        const values = [token];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length > 0) {
+        res.json({ valid: true });
+        } else {
+        res.json({ valid: false });
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Failed to verify token" });
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
