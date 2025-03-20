@@ -17,12 +17,6 @@
   margin: 0;
 }
 
-.header h2 {
-  font-size: 1.2rem;
-  margin: 0;
-  color: #666;
-}
-
 .fade-out {
   opacity: 0; /* Fade out the header */
 }
@@ -46,9 +40,10 @@
 .search-bar-top {
   top: 20px; /* Move to the top */
   transform: translateY(0); /* Reset transform */
+  position: relative;
 }
 
-input {
+input[type = "text"] {
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -68,4 +63,72 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #7a7a7a;
+  cursor: not-allowed;
+}
+
+
+.timespan-selector {
+  margin-top: 100px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.timespan-selector label {
+  font-size: 16px;
+}
+
+.timespan-selector input[type="date"] {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.content {
+  margin-top: 20px;
+  width: 80%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+  word-wrap: break-word; /* Breaks long words to fit within the cell */
+  overflow-wrap: break-word; /* Ensures long words wrap to the next line */
+  white-space: normal; /* Allows text to wrap to the next line */
+  max-width: 25vw;
+}
+
+table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+table tbody tr.sub-row td:first-child,
+table tbody tr.sub-row td:nth-child(2) {
+  border-top: 2px solid #cbcbcb80; 
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
