@@ -5,16 +5,31 @@ import React, { useState } from 'react';
 const App = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+
+  const performSearch = (query) => {
+    const mockResults = [
+      `Result 1 for "${query}"`,
+      `Result 2 for "${query}"`,
+      `Result 3 for "${query}"`,
+    ];
+    return mockResults;
+  };
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      // Perform search logic here
+      const results = performSearch(searchQuery);
+      setSearchResults(results)
       setHasSearched(true);
     }
   };
 
   return (
     <div className="App">
+      <div className={`header ${hasSearched ? 'fade-out' : ''}`}>
+        <h1>T.R.A.C.K.</h1>
+        <h2>Transaction Receipt Aggregation and Centralized Knowledge</h2>
+      </div>
        <div className={`search-bar ${hasSearched ? 'search-bar-top' : 'search-bar-center'}`}>
         <input
           type="text"
@@ -27,13 +42,21 @@ const App = () => {
             }
           }}
         />
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleSearch} disabled={!searchQuery.trim()}>Search</button>
       </div>
-      {hasSearched && (
-        <div className="content">
-          <p>searched</p>
-        </div>
-      )}
+        {hasSearched && (
+          <div className="content">
+            {searchResults.length > 0 ? (
+              searchResults.map((result, index) => (
+                <div key={index} className="item">
+                  {result}
+                </div>
+              ))
+            ) : (
+              <div className="item">No results found.</div>
+            )}
+          </div>
+        )}
     </div>
   );
 }
