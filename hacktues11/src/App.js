@@ -7,19 +7,32 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  const performSearch = (query) => {
-    const mockResults = [
-      `Result 1 for "${query}"`,
-      `Result 2 for "${query}"`,
-      `Result 3 for "${query}"`,
-    ];
-    return mockResults;
-  };
+  // Mock JSON data
+  const mockData = [
+    {
+      date_time: "20.03.2025",
+      order_id: "ORD12345",
+      items: ["bread", "soda"],
+      price: 5.5,
+    },
+    {
+      date_time: "20.03.2025",
+      order_id: "ORD12346",
+      items: ["milk", "cookies"],
+      price: 7.2,
+    },
+    {
+      date_time: "20.03.2025",
+      order_id: "ORD12347",
+      items: ["juice", "chips"],
+      price: 6.8,
+    },
+  ];
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      const results = performSearch(searchQuery);
-      setSearchResults(results)
+      // Set the search results to the mock data (ignoring the search query)
+      setSearchResults(mockData);
       setHasSearched(true);
     }
   };
@@ -30,7 +43,7 @@ const App = () => {
         <h1>T.R.A.C.K.</h1>
         <h2>Transaction Receipt Aggregation and Centralized Knowledge</h2>
       </div>
-       <div className={`search-bar ${hasSearched ? 'search-bar-top' : 'search-bar-center'}`}>
+      <div className={`search-bar ${hasSearched ? 'search-bar-top' : 'search-bar-center'}`}>
         <input
           type="text"
           placeholder="Type business name here"
@@ -38,27 +51,32 @@ const App = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
-              handleSearch(e.target.value);
+              handleSearch();
             }
           }}
         />
-        <button onClick={handleSearch} disabled={!searchQuery.trim()}>Search</button>
+        <button onClick={handleSearch} disabled={!searchQuery.trim()}>
+          Search
+        </button>
       </div>
-        {hasSearched && (
-          <div className="content">
-            {searchResults.length > 0 ? (
-              searchResults.map((result, index) => (
-                <div key={index} className="item">
-                  {result}
-                </div>
-              ))
-            ) : (
-              <div className="item">No results found.</div>
-            )}
-          </div>
-        )}
+      {hasSearched && (
+        <div className="content">
+          {searchResults.length > 0 ? (
+            searchResults.map((order, index) => (
+              <div key={index} className="item">
+                <p><strong>Date & Time:</strong> {order.date_time}</p>
+                <p><strong>Order ID:</strong> {order.order_id}</p>
+                <p><strong>Items:</strong> {order.items.join(', ')}</p>
+                <p><strong>Price:</strong> ${order.price.toFixed(2)}</p>
+              </div>
+            ))
+          ) : (
+            <div className="item">No results found.</div>
+          )}
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;

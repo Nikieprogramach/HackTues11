@@ -1,0 +1,20 @@
+[
+    {
+      "date_time": "20.03.2025",
+      "order_id": "ORD12345",
+      "items": ["bread", "soda"],
+      "price": 5.50
+    },
+    {
+      "date_time": "20.03.2025",
+      "order_id": "ORD12346",
+      "items": ["milk", "cookies"],
+      "price": 7.20
+    },
+    {
+      "date_time": "20.03.2025",
+      "order_id": "ORD12347",
+      "items": ["juice", "chips"],
+      "price": 6.80
+    }
+  ]
