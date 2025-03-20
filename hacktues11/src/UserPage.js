@@ -1,7 +1,5 @@
 import React from 'react';
 
-console.log('App is rendering!');
-
 const UserPage = () => {
   return (
     <div>

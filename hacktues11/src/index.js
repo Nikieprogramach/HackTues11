@@ -7,7 +7,7 @@ import AdminPage from './AdminPage';
 import UserPage from './UserPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-console.log('App is rendering!');
+
 root.render(
   <React.StrictMode>
      <Router>

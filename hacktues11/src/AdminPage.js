@@ -4,8 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
 
-console.log('App is rendering!');
-
 const AdminPage = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,94 +11,7 @@ const AdminPage = () => {
   const [sortedData, setSortedData] = useState([]);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-
-  // Mock JSON data
-  const mockData = [
-    {
-      date_time: "20.03.2025",
-      order_id: "ORD12345",
-      items: ["bread", "soda"],
-      prices: [2.5, 3.0],
-      total_price: 5.5, // Add total_price to each order
-    },
-    {
-      date_time: "19.03.2025",
-      order_id: "ORD12346",
-      items: ["milk", "cookies"],
-      prices: [1.2, 6.0],
-      total_price: 7.2, // Add total_price to each order
-    },
-    {
-      date_time: "21.03.2025",
-      order_id: "ORD12347",
-      items: ["juice", "chips", "candy"],
-      prices: [2.0, 3.5, 1.3],
-      total_price: 6.8, // Add total_price to each order
-    },
-    {
-      date_time: "20.02.2025",
-      order_id: "ORD12345",
-      items: ["bread", "soda"], // Ensure this is an array
-      prices: [2.5, 3.0], // Ensure this is an array
-      total_price: 7.2,
-    },
-    {
-      date_time: "20.04.2025",
-      order_id: "ORD12346",
-      items: ["milk", "cookies"], // Ensure this is an array
-      prices: [1.2, 6.0], // Ensure this is an array
-      total_price: 7.2,
-    },
-    {
-      date_time: "01.08.2024",
-      order_id: "ORD12347",
-      items: ["juice", "chips", "candy"], // Ensure this is an array
-      prices: [2.0, 3.5, 1.3], // Ensure this is an array
-      total_price: 7.2,
-    },
-    {
-      date_time: "20.07.2024",
-      order_id: "ORD12345",
-      items: ["bread", "soda"], // Ensure this is an array
-      prices: [2.5, 3.0], // Ensure this is an array
-      total_price: 7.2,
-    },
-    {
-      date_time: "20.09.2024",
-      order_id: "ORD12346",
-      items: ["milk", "cookies"], // Ensure this is an array
-      prices: [1.2, 6.0], // Ensure this is an array
-      total_price: 7.2,
-    },
-    {
-      date_time: "01.03.2024",
-      order_id: "ORD12347",
-      items: ["juice", "chips", "candy"], // Ensure this is an array
-      prices: [2.0, 3.5, 1.3], // Ensure this is an array
-      total_price: 7.2,
-    },
-    {
-      date_time: "20.03.2024",
-      order_id: "ORD12345",
-      items: ["bread", "soda"], // Ensure this is an array
-      prices: [2.5, 3.0], // Ensure this is an array
-      total_price: 7.2,
-    },
-    {
-      date_time: "20.03.2025",
-      order_id: "ORD12346",
-      items: ["milk", "cookies"], // Ensure this is an array
-      prices: [1.2, 6.0], // Ensure this is an array
-      total_price: 7.2,
-    },
-    {
-      date_time: "20.03.2025",
-      order_id: "ORD12347",
-      items: ["juice", "chips", "candy"], // Ensure this is an array
-      prices: [2.0, 3.5, 1.3], // Ensure this is an array
-      total_price: 7.2,
-    },
-  ];
+  const [data, setData] = useState([]); 
 
   const parseDate = (dateStr) => {
     const [day, month, year] = dateStr.split('.');
@@ -120,27 +31,44 @@ const AdminPage = () => {
     });
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchQuery.trim()) {
-
       if (!hasSearched) {
         const today = new Date().toISOString().split('T')[0];
         setFromDate('');
         setToDate(today);
       }
-
-      const sortedData = [...mockData].sort((a, b) => {
-        const dateA = new Date(a.date_time.split('.').reverse().join('-'));
-        const dateB = new Date(b.date_time.split('.').reverse().join('-'));
-        return dateB - dateA;
-      });
-
-      setSortedData(sortedData);
-      const filteredResults = filterResultsByTimespan(sortedData);
-      setSearchResults(filteredResults);
-      setHasSearched(true);
+  
+      try {
+        const url = new URL('http://localhost:3000/getOrdersFromShop');
+        url.searchParams.append('business', searchQuery.trim());
+  
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+  
+        const result = await response.json();
+        setData(result);
+  
+        const sortedData = [...result].sort((a, b) => {
+          const dateA = new Date(a.date_time.split('.').reverse().join('-'));
+          const dateB = new Date(b.date_time.split('.').reverse().join('-'));
+          return dateB - dateA;
+        });
+  
+        setSortedData(sortedData);
+        const filteredResults = filterResultsByTimespan(sortedData);
+        setSearchResults(filteredResults);
+        setHasSearched(true);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setData([]);
+        setSearchResults([]);
+      }
     }
   };
+  
 
   useEffect(() => {
     if (hasSearched) {
@@ -191,7 +119,7 @@ const AdminPage = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Дата и Време</th>
+                  <th>Дата & Време</th>
                   <th>Номер на поръчкта</th>
                   <th>Продукти</th>
                   <th>Цена</th>
