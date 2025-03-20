@@ -103,6 +103,10 @@ table th, table td {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: left;
+  word-wrap: break-word; /* Breaks long words to fit within the cell */
+  overflow-wrap: break-word; /* Ensures long words wrap to the next line */
+  white-space: normal; /* Allows text to wrap to the next line */
+  max-width: 25vw;
 }
 
 table th {
