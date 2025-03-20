@@ -17,7 +17,12 @@ const pool = new Pool({
 });
 
 app.get('/getOrdersFromShop', async (req, res) => {
-
+    const {
+        business
+    } = req.body
+    query = `SELECT * FROM conformedPurchases WHERE business = ${business}` 
+    const result = await pool.query(query)
+    res.json(result.rows)
 });
 
 app.post('/queryPurchase', async (req, res) => {
