@@ -29,7 +29,7 @@ async function createTable() {
     // const query = `
     //     CREATE TABLE IF NOT EXISTS unconformedPurchases (
     //     orderid INT NOT NULL,
-    //     busines VARCHAR(250) NOT NULL,
+    //     business VARCHAR(250) NOT NULL,
     //     purchaseditems TEXT NOT NULL,
     //     paymentmethod VARCHAR(100) NOT NULL,
     //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -37,19 +37,30 @@ async function createTable() {
     // `;
 
     const query = `
-        CREATE TABLE IF NOT EXISTS conformedPurchases (
-        orderid SERIAL PRIMARY KEY,
-        busines VARCHAR(250) NOT NULL,
-        purchaseditems TEXT NOT NULL,
-        clientfirstname VARCHAR(200),
-        clientlastname VARCHAR(200),
-        cardnumbers INT NOT NULL,
+        CREATE TABLE IF NOT EXISTS unconformedPayments (
+        orderid INT NOT NULL,
+        clientfirstname VARCHAR(250) NOT NULL,
+        clientlastname VARCHAR(250) NOT NULL,
+        cardnums INT NOT NULL,
         amount DECIMAL NOT NULL,
-        paymentmethod VARCHAR(100) NOT NULL,
-        date DATE NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     `;
+
+    // const query = `
+    //     CREATE TABLE IF NOT EXISTS conformedPurchases (
+    //     orderid SERIAL PRIMARY KEY,
+    //     business VARCHAR(250) NOT NULL,
+    //     purchaseditems TEXT NOT NULL,
+    //     clientfirstname VARCHAR(200),
+    //     clientlastname VARCHAR(200),
+    //     cardnumbers INT NOT NULL,
+    //     amount DECIMAL NOT NULL,
+    //     paymentmethod VARCHAR(100) NOT NULL,
+    //     date DATE NOT NULL,
+    //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    //     );
+    // `;
   
     await client.query(query);
     console.log("Table created successfully");

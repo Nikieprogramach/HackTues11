@@ -5,4 +5,5 @@ message Order {
   string business = 2;
   string paymentMethod = 3;
   repeated string purchasedItems = 4;
+  double amount = 5;
 }

@@ -85,7 +85,8 @@ proto.Order.toObject = function(includeInstance, msg) {
 orderid: jspb.Message.getFieldWithDefault(msg, 1, 0),
 business: jspb.Message.getFieldWithDefault(msg, 2, ""),
 paymentmethod: jspb.Message.getFieldWithDefault(msg, 3, ""),
-purchaseditemsList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f
+purchaseditemsList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f,
+amount: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0)
   };
 
   if (includeInstance) {
@@ -137,6 +138,10 @@ proto.Order.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.addPurchaseditems(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setAmount(value);
       break;
     default:
       reader.skipField();
@@ -192,6 +197,13 @@ proto.Order.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeRepeatedString(
       4,
+      f
+    );
+  }
+  f = message.getAmount();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      5,
       f
     );
   }
@@ -286,6 +298,24 @@ proto.Order.prototype.addPurchaseditems = function(value, opt_index) {
  */
 proto.Order.prototype.clearPurchaseditemsList = function() {
   return this.setPurchaseditemsList([]);
+};
+
+
+/**
+ * optional double amount = 5;
+ * @return {number}
+ */
+proto.Order.prototype.getAmount = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 5, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.Order} returns this
+ */
+proto.Order.prototype.setAmount = function(value) {
+  return jspb.Message.setProto3FloatField(this, 5, value);
 };
 
 
