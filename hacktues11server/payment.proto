@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message Payment {
+  int64 orderID = 1;
+  string firstname = 2;
+  string lastname = 3;
+  int64 cardnums = 4;
+  double amount = 5;
+}

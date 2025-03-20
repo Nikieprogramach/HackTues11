@@ -9,7 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "google-protobuf": "^3.21.4",
+    "grpc-tools": "^1.13.0",
+    "pg": "^8.14.1",
+    "protoc-gen-js": "^3.21.4-4"
   }
 }

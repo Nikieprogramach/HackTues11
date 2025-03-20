@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message Order {
+  int64 orderID = 1;
+  string business = 2;
+  string paymentMethod = 3;
+  repeated string purchasedItems = 4;
+}
