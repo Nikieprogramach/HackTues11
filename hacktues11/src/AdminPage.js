@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
+import OrdersDisplay from './ordersDisplay';
 
 const AdminPage = () => {
   const [hasSearched, setHasSearched] = useState(false);
@@ -18,64 +19,71 @@ const AdminPage = () => {
     return new Date(`${year}-${month}-${day}`);
   };
 
-  const filterResultsByTimespan = (results) => {
-    return results.filter((order) => {
-      const orderDate = parseDate(order.date_time);
-      const from = fromDate ? new Date(fromDate) : null;
-      const to = toDate ? new Date(toDate) : null;
+  // const filterResultsByTimespan = (results) => {
+  //   return results.filter((order) => {
+  //     const orderDate = parseDate(order.date_time);
+  //     const from = fromDate ? new Date(fromDate) : null;
+  //     const to = toDate ? new Date(toDate) : null;
 
-      return (
-        (!from || orderDate >= from) && 
-        (!to || orderDate <= to) 
-      );
-    });
-  };
+  //     return (
+  //       (!from || orderDate >= from) && 
+  //       (!to || orderDate <= to) 
+  //     );
+  //   });
+  // };
 
   const handleSearch = async () => {
     if (searchQuery.trim()) {
-      if (!hasSearched) {
-        const today = new Date().toISOString().split('T')[0];
-        setFromDate('');
-        setToDate(today);
-      }
-  
-      try {
-        const url = new URL('http://localhost:3000/getOrdersFromShop');
-        url.searchParams.append('business', searchQuery.trim());
-  
-        const response = await fetch(url.toString());
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
+        // if (!hasSearched) {
+        //     const today = new Date().toISOString().split('T')[0];
+        //     setFromDate('');
+        //     setToDate(today);
+        // }
+
+        try {
+            const response = await fetch('http://localhost:5000/getOrdersFromShop', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ business: searchQuery.trim() }),
+                mode: 'cors'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const result = await response.json();
+
+            console.log("Fetched Data:", result);
+
+            setData(result);
+            setSearchResults(result)
+            setHasSearched(true);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            setData([]);
+            setSearchResults([]); // Clear results in case of error
         }
-  
-        const result = await response.json();
-        setData(result);
-  
-        const sortedData = [...result].sort((a, b) => {
-          const dateA = new Date(a.date_time.split('.').reverse().join('-'));
-          const dateB = new Date(b.date_time.split('.').reverse().join('-'));
-          return dateB - dateA;
-        });
-  
-        setSortedData(sortedData);
-        const filteredResults = filterResultsByTimespan(sortedData);
-        setSearchResults(filteredResults);
-        setHasSearched(true);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setData([]);
-        setSearchResults([]);
-      }
     }
-  };
-  
+};
+
+  // useEffect(() => {
+  //   if (hasSearched) {
+  //     const filteredResults = filterResultsByTimespan(sortedData);
+  //     setSearchResults(filteredResults);
+  //   }
+  // }, [fromDate, toDate]);
 
   useEffect(() => {
-    if (hasSearched) {
-      const filteredResults = filterResultsByTimespan(sortedData);
-      setSearchResults(filteredResults);
-    }
-  }, [fromDate, toDate]);
+    if (data.length > 0) {
+      setSearchResults(data);
+  } else {
+      setSearchResults([]);
+  }
+}, [data]);
 
   return (
     <div className="App">
@@ -100,7 +108,7 @@ const AdminPage = () => {
         </button>
       </div>
       {hasSearched && (
-        <>
+        <div>
           <div className={`timespan-selector ${hasSearched ? 'fade-in' : ''}`}>
             <label>От дата:</label>
             <input
@@ -115,47 +123,8 @@ const AdminPage = () => {
               onChange={(e) => setToDate(e.target.value)}
             />
           </div>
-          <div className={`content ${hasSearched ? 'fade-in' : ''}`}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Дата & Време</th>
-                  <th>Номер на поръчкта</th>
-                  <th>Продукти</th>
-                  <th>Цена</th>
-                </tr>
-              </thead>
-              <tbody>
-                {searchResults.length > 0 ? (
-                  searchResults.map((order, index) => (
-                    <React.Fragment key={index}>
-                      {order.items.map((item, i) => (
-                        <tr key={`${index}-${i}`} className={i > 0 ? 'sub-row' : ''}>
-                          {i === 0 && (
-                            <>
-                              <td rowSpan={order.items.length + 1}>{order.date_time}</td>
-                              <td rowSpan={order.items.length + 1}>{order.order_id}</td>
-                            </>
-                          )}
-                          <td>{item}</td>
-                          <td>{order.prices[i].toFixed(2)} лв.</td>
-                        </tr>
-                      ))}
-                      <tr className="sub-row">
-                        <td><b>ОБЩА ЦЕНА</b></td>
-                        <td><b>{order.total_price.toFixed(2)} лв.</b></td>
-                      </tr>
-                    </React.Fragment>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4">No results found.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </>
+          <OrdersDisplay key={searchResults.length} orders={searchResults} hasSearched={hasSearched}/>
+        </div>
       )}
     </div>
   );

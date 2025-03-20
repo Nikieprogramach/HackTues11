@@ -1,9 +1,15 @@
 const express = require('express');
-const app = express();
 const PORT = process.env.PORT || 5000;
 const { Pool } = require('pg');
 require('dotenv').config();
+const cors = require('cors');
 
+const options = {
+origin: ["http://localhost:3000"],
+}
+
+const app = express();
+app.use(cors(options));
 app.use(express.json());
 
 const pool = new Pool({
@@ -14,16 +20,20 @@ const pool = new Pool({
     port: process.env.PORT,
 });
 
-app.get('/getOrdersFromShop', async (req, res) => {
+app.post('/getOrdersFromShop', async (req, res) => {
+    res.set('Access-Control-Allow-Origin', 'http://localhost:3000')
     const {
         business
     } = req.body
-    query = `SELECT * FROM conformedPurchases WHERE business = ${business}` 
+    console.log(business)
+    query = `SELECT * FROM conformedPurchases WHERE business = '${business}'` 
     const result = await pool.query(query)
+    console.log(result.rows)
     res.json(result.rows)
 });
 
 app.post('/login', async (req, res) => {
+    res.set('Access-Control-Allow-Origin', 'https://nikola.aleksovi.com')
     const {
         username,
         password
