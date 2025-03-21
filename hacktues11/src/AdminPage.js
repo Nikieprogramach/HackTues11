@@ -53,16 +53,11 @@ const AdminPage = () => {
     checkAuth();
   }, []);
 
-  const parseDate = (dateStr) => {
-    const [day, month, year] = dateStr.split('.');
-    return new Date(`${year}-${month}-${day}`);
-  };
-
-  // const filterResultsByTimespan = (results) => {
-  //   return results.filter((order) => {
-  //     const orderDate = parseDate(order.date_time);
-  //     const from = fromDate ? new Date(fromDate) : null;
-  //     const to = toDate ? new Date(toDate) : null;
+  const filterResultsByTimespan = (results) => {
+    return results.filter((order) => {
+      const orderDate = new Date(order.date);
+      const from = fromDate ? new Date(fromDate) : null;
+      const to = toDate ? new Date(toDate) : null;
 
       return (
         (!from || orderDate >= from) && 
