@@ -85,8 +85,8 @@ const UserPage = () => {
   };
 
   const fetchOrders = async (cardNumber) => {
-    // const firstname =  JSON.parse(localStorage.getItem("user")).firstname; 
-    // const lastname = JSON.parse(localStorage.getItem("user")).lastname;
+    const firstname =  JSON.parse(localStorage.getItem("user")).firstname; 
+    const lastname = JSON.parse(localStorage.getItem("user")).lastname;
 
     // try {
     //   const response = await fetch('http://localhost:5000/getpurchaseswithcard', {
@@ -123,31 +123,10 @@ const UserPage = () => {
   setOrders(result);
   };
 
-  // const handleAddCard = () => {
-  //   setNewCard({ digits: '', firstname: '', lastname: '' });
-  //   setShowAddCardPopup(true);
-  // };
-
-  // const handleSaveCard = () => {
-  //   if (newCard.digits.length === 4 && 
-  //     newCard.firstname ===  JSON.parse(localStorage.getItem("user")).firstname && 
-  //     newCard.lastname === JSON.parse(localStorage.getItem("user")).lastname
-  //   ) {
-
-  //     setCards(prevCards => (Array.isArray(prevCards) ? [...prevCards, newCard.digits] : [newCard.digits]));
-  //     addCardToUSer(newCard.digits);
-  //     setNewCard({ digits: '', firstname: '', lastname: '' });
-  //     setShowAddCardPopup(false);
-  //   } else {
-  //     alert('Моля, попълнете всички полета правилно.');
-  //   }
-  // };
-
   // const addCardToUSer = async (cardNumber) => {
   //   const token = localStorage.getItem('token')
-  //   const firstname =  JSON.parse(localStorage.getItem("user")).firstname; 
+  //   const firstname = JSON.parse(localStorage.getItem("user")).firstname; 
   //   const lastname = JSON.parse(localStorage.getItem("user")).lastname;
-  //   console.log(cardNumber)
 
   //   try {
   //     const response = await fetch('http://localhost:5000/addcardtouser', {
@@ -170,16 +149,15 @@ const UserPage = () => {
   // };
 
   const handleAddCard = () => {
-    setNewCard({ digits: '', firstname: '', lastname: '' });
+    setNewCard({ digits: '', firstName: '', lastName: '' });
     setShowAddCardPopup(true);
   };
 
   const handleSaveCard = async () => {
-    console.log(newCard)
-    if (newCard.digits.length === 4 && newCard.firstname ===  JSON.parse(localStorage.getItem("user")).firstname && newCard.lastname === JSON.parse(localStorage.getItem("user")).lastname) {
-      // setCards([...cards, newCard.digits]);
-      // setNewCard({ digits: '', firstName: '', lastName: '' });
-      // setShowAddCardPopup(false);
+    if (newCard.digits.length === 4 && 
+      newCard.firstName ===  JSON.parse(localStorage.getItem("user")).firstname && 
+      newCard.lastName === JSON.parse(localStorage.getItem("user")).lastname
+    ) {
       const token = localStorage.getItem("authToken")
       const firstname = JSON.parse(localStorage.getItem("user")).firstname; 
       const lastname = JSON.parse(localStorage.getItem("user")).lastname;
@@ -256,19 +234,19 @@ const UserPage = () => {
             <input
               type="text"
               placeholder="Последните 4 цифри на картата"
-              value={newCard.digits}
+              // value={newCard.digits}
               onChange={(e) => setNewCard({ ...newCard, digits: e.target.value })}
             />
             <input
               type="text"
               placeholder="Първо Име"
-              value={newCard.firstname}
+              // value={newCard.firstname}
               onChange={(e) => setNewCard({ ...newCard, firstname: e.target.value })}
             />
             <input
               type="text"
               placeholder="Фамилия"
-              value={newCard.lastname}
+              // value={newCard.lastname}
               onChange={(e) => setNewCard({ ...newCard, lastname: e.target.value })}
             />
             <div className="popup-buttons">
