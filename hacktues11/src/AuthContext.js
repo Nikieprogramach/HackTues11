@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signup = async (firstname, lastname, email, password) => {
+    console.log(firstname, lastname, email, password)
     try {
       const response = await fetch(`http://localhost:5000/signup`, {
         method: "POST",
@@ -47,7 +48,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (response.ok) {
-        navigate("/login")
+        login(email, password)
       } else {
         console.error("Failed to create account");
       }

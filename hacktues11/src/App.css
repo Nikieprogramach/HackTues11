@@ -31,6 +31,7 @@
 
 .login-page label {
   font-weight: bold;
+  margin-right: 8px;
 }
 
 .login-page input {
@@ -40,7 +41,7 @@
   border-radius: 4px;
 }
 
-.login-page button {
+.login-page button{
   padding: 10px;
   font-size: 16px;
   background-color: #007bff;
@@ -50,8 +51,16 @@
   cursor: pointer;
 }
 
-.login-page button:hover {
+.login-page button[type = "submit"]:hover {
   background-color: #0056b3;
+}
+
+.login-page button[type = "button"]{
+  background-color: #495a6d;
+}
+
+.login-page button[type = "button"]:hover {
+  background-color: #2f3943;
 }
 
 .error {
@@ -174,11 +183,16 @@ table th, table td {
 table th {
   background-color: #f0f0f0;
   font-weight: bold;
+  text-align: center;
 }
 
 table tbody tr.sub-row td:first-child,
 table tbody tr.sub-row td:nth-child(2) {
   border-top: 2px solid #cbcbcb80; 
+}
+
+.main-row{
+  text-align: center;
 }
 
 @media (max-width: 768px) {

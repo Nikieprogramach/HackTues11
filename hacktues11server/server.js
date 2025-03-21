@@ -91,11 +91,10 @@ app.post('/signup', async (req, res) => {
         email,
         password
     } = req.body;
-
     const query = `SELECT * FROM users WHERE email = '${email}'`;
     try {
         const result = await pool.query(query);
-        console.log()
+        
         if (result.rows.length > 0) {
             res.status(401).json({ error: "Account with that username already exists" });
         } else {
@@ -103,7 +102,7 @@ app.post('/signup', async (req, res) => {
             var hash = bcrypt.hashSync(password, salt);
             const query1 = `INSERT INTO users (firstname, lastname, email, password) VALUES ('${firstname}', '${lastname}', '${email}', '${hash}')`
             await pool.query(query1);
-            res.json("Acount created successfully")
+            res.json({"ok": true})
         }
     } catch (err) {
         console.error(err.message);

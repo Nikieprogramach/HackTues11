@@ -14,18 +14,18 @@ async function createTable() {
     await client.connect();
     console.log("Connected to PostgreSQL");
 
-    // const query = `
-    //   CREATE TABLE IF NOT EXISTS users (
-    //     id SERIAL PRIMARY KEY,
-    //     firstname VARCHAR(200) NOT NULL,
-    //     lastname VARCHAR(200) NOT NULL,
-    //     email VARCHAR(200) UNIQUE NOT NULL,
-    //     password VARCHAR(1000) NOT NULL,
-    //     cards TEXT,
-    //     privileges VARCHAR(100) NOT NULL,
-    //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    //   );
-    // `;
+    const query = `
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        firstname VARCHAR(200) NOT NULL,
+        lastname VARCHAR(200) NOT NULL,
+        email VARCHAR(200) UNIQUE NOT NULL,
+        password VARCHAR(1000) NOT NULL,
+        cards TEXT,
+        privileges VARCHAR(100) DEFAULT 'user',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
 
     // const query = `
     //     CREATE TABLE IF NOT EXISTS unconformedPurchases (
@@ -76,14 +76,14 @@ async function createTable() {
     //   );
     // `;
 
-    const query = `
-      CREATE TABLE cards (
-        id SERIAL PRIMARY KEY,
-        firstname VARCHAR(200) NOT NULL,
-        lastname VARCHAR(200) NOT NULL,
-        cardnumbers INT NOT NULL
-      );
-    `;
+    // const query = `
+    //   CREATE TABLE cards (
+    //     id SERIAL PRIMARY KEY,
+    //     firstname VARCHAR(200) NOT NULL,
+    //     lastname VARCHAR(200) NOT NULL,
+    //     cardnumbers INT NOT NULL
+    //   );
+    // `;
     await client.query(query);
     console.log("Table created successfully");
   } catch (err) {
