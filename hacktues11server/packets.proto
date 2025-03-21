@@ -13,7 +13,7 @@ message Response {
 
 message Product {
   string name = 1;
-  int32 price = 2;
+  double price = 2;
 }
 
 message Order {

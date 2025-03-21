@@ -15,14 +15,14 @@ const client = new packets.PacketAPI("localhost:50051", grpc.credentials.createI
 
 function testOrder() {
     const order = {
-        orderID: 12345,
-        business: "Test Business",
+        orderID: 2094846,
+        business: "LIDL",
         paymentMethod: "card",
         purchasedItems: [
-            { name: "Item1", price: 10.0 },
-            { name: "Item2", price: 20.0 }
+            { name: "Баница със спанак", price: 1.29 },
+            { name: "Вафла Морени", price: 1.50 }
         ],
-        amount: 30.0
+        amount: 2.79
     };
     
     client.QueryOrder(order, (error, response) => {
@@ -36,11 +36,11 @@ function testOrder() {
 
 function testPayment() {
     const payment = {
-        orderID: 12345,
+        orderID: 2094846,
         firstname: "Nikola",
         lastname: "Aleksov",
-        cardnums: "1346",
-        amount: 30.0
+        cardnums: "8464",
+        amount: 2.79
     };
     
     client.QueryPayment(payment, (error, response) => {

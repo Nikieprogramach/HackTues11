@@ -24,7 +24,8 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 
 async function QueryOrderHandler(call, callback){
     const { orderID, business, paymentMethod, purchasedItems, amount } = call.request;
-    var purchasedItemsString = purchasedItems.map(item => `${item.name}: ${item.price}`).join(", ");
+    console.log(purchasedItems)
+    var purchasedItemsString = purchasedItems.map(item => `${item.name}: ${item.price.toFixed(2)}`).join(", ");
     try{
         query = `SELECT * FROM unconformedpayments WHERE orderid = $1` 
         values = [orderID]

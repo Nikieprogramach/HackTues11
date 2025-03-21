@@ -272,7 +272,7 @@ proto.packets.Product.prototype.toObject = function(opt_includeInstance) {
 proto.packets.Product.toObject = function(includeInstance, msg) {
   var f, obj = {
 name: jspb.Message.getFieldWithDefault(msg, 1, ""),
-price: jspb.Message.getFieldWithDefault(msg, 2, 0)
+price: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0)
   };
 
   if (includeInstance) {
@@ -314,7 +314,7 @@ proto.packets.Product.deserializeBinaryFromReader = function(msg, reader) {
       msg.setName(value);
       break;
     case 2:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readDouble());
       msg.setPrice(value);
       break;
     default:
@@ -354,8 +354,8 @@ proto.packets.Product.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getPrice();
-  if (f !== 0) {
-    writer.writeInt32(
+  if (f !== 0.0) {
+    writer.writeDouble(
       2,
       f
     );
@@ -382,11 +382,11 @@ proto.packets.Product.prototype.setName = function(value) {
 
 
 /**
- * optional int32 price = 2;
+ * optional double price = 2;
  * @return {number}
  */
 proto.packets.Product.prototype.getPrice = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 2, 0.0));
 };
 
 
@@ -395,7 +395,7 @@ proto.packets.Product.prototype.getPrice = function() {
  * @return {!proto.packets.Product} returns this
  */
 proto.packets.Product.prototype.setPrice = function(value) {
-  return jspb.Message.setProto3IntField(this, 2, value);
+  return jspb.Message.setProto3FloatField(this, 2, value);
 };
 
 
