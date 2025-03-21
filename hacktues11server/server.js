@@ -253,6 +253,139 @@ app.post('/getusercards', async (req, res) => {
     }
 });
 
+/////////////////////////////////////////////////////////
+// IRIS api requests
+////////////////////////////////////////////////////////
+
+
+
+app.post('/setiban', async (req, res) => { 
+    const {
+        token,
+        iban,
+        bank
+    } = req.body;
+    try{
+        const query = `SELECT * FROM authtokens WHERE token = $1 AND CURRENT_TIMESTAMP < expires_at`;
+        const values = [token];
+        const result = await pool.query(query, values);
+        if (result.rows.length > 0) {
+            const query1 = `SELECT * FROM users WHERE id = $1`;
+            const userID = result.rows[0].user_id
+            const values = [userID];
+            const result1 = await pool.query(query1, values); 
+            var user = result1.rows[0]
+            console.log(user)
+            const irisUser = await signupAgent(process.env.IRISAGENTHASH, null, null, user.firstname, null, user.lastname, null, user.email, null)
+            const banks = await getBanks(irisUser.userHash, null)
+            const irisBank = banks.find(b => b.name.toLowerCase() === bank.toLowerCase())
+            const registeredUser = await registerConsent(irisUser.userHash, irisBank.bankHash, user.firstname + " " + user.lastname, iban, null, null, null, null)
+            res.json(registeredUser.startUrl)
+        }
+    }catch{
+        res.status(500).json({ error: "Failed to set IBAN" });
+    }
+})
+
+async function signupAgent(agentHash, companyName, uic, name, middleName, family, identityHash, email, webhookUrl) {
+    const url = "https://developer.sandbox.irispay.bg/api/8/signup";
+    
+    const body = {
+        agentHash,
+        companyName: companyName || undefined,
+        uic: uic !== null ? uic : undefined,
+        name: name || undefined,
+        middleName: middleName || undefined,
+        family: family || undefined,
+        identityHash: identityHash || undefined,
+        email: email || undefined,
+        webhookUrl: webhookUrl || undefined
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Signup request failed:", error);
+        throw error;
+    }
+}
+
+async function getBanks(userHash, country = "") {
+    let url = "https://developer.sandbox.irispay.bg/api/8/banks";
+    if (country) {
+        url += `?country=${encodeURIComponent(country)}`;
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "x-user-hash": userHash,
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Bank list request failed:", error);
+        throw error;
+    }
+}
+
+async function registerConsent(userHash, bankHash, username, iban, hookHash = null, sms = null, authorizationUrl = null, authorizationId = null) {
+    const url = "https://developer.sandbox.irispay.bg/api/8/consent";
+    
+    const body = {
+        bankHash,
+        username,
+        iban,
+        hookHash: hookHash || undefined,
+        sms: sms || undefined,
+        authorizationUrl: authorizationUrl || undefined,
+        authorizationId: authorizationId || undefined
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "x-user-hash": userHash,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            console.log("response: ", response)
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Consent registration request failed:", error);
+        throw error;
+    }
+}
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
