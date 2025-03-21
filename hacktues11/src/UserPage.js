@@ -25,7 +25,7 @@ const UserPage = () => {
     } else {
       setOrders([]); 
     }
-  }, [selectedCard]);
+  }, [selectedCard, newCard]);
 
   const checkAuth = async () => {
     const token = localStorage.getItem("authToken");
@@ -164,7 +164,22 @@ const UserPage = () => {
         console.error('Failed to add card');
       }
     } catch (error) {
-      console.error('Error adding cards:', error);
+      console.error('Error fetching orders:', error);
+    }
+  };
+
+  const handleAddCard = () => {
+    setNewCard({ digits: '', firstName: '', lastName: '' });
+    setShowAddCardPopup(true);
+  };
+
+  const handleSaveCard = () => {
+    if (newCard.digits.length === 4 && newCard.firstName ===  JSON.parse(localStorage.getItem("user")).firstname && newCard.lastName === JSON.parse(localStorage.getItem("user")).lastname) {
+      setCards([...cards, newCard.digits]);
+      setNewCard({ digits: '', firstName: '', lastName: '' });
+      setShowAddCardPopup(false);
+    } else {
+      alert('Please fill all fields correctly.');
     }
   }
   const handleLogout = () => {

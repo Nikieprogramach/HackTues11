@@ -139,9 +139,8 @@ app.post('/addcardtouser', async (req, res) => {
         firstname,
         lastname
     } = req.body;
-
     try {
-        const query = `SELECT * FROM authtokens WHERE token = $1 AND CURRENT_TIMESTAMP < expires_at`;
+        const query = `SELECT * FROM authtokens WHERE token = $1`;
         const values = [token];
         const result = await pool.query(query, values);
 
@@ -149,34 +148,43 @@ app.post('/addcardtouser', async (req, res) => {
             const query1 = `SELECT * FROM users WHERE id = $1`;
             const userID = result.rows[0].user_id
             const values = [userID];
-            if(result.rows[0].cards !== ""){
-                var cards = result.rows[0].cards.split(',')
+            if(result.rows[0].cards !== "" && result.rows[0].cards !== null){
+                var cards = toString(result.rows[0].cards).split(',')
             }else{
                 var cards = []
             }
-            const result = await pool.query(query1, values);
-            if(result.rows.length > 0){
-                const query1 = `INSERT INTO cards (firstname, lastname, cardnumbers) VALUES ('${firstname}', '${lastname}', '${cardnumbers}') WHERE NOT EXISTS ( SELECT * FROM cards 
-                   WHERE firstname = '${firstname}'
-                   AND lastname = '${lastname}'
-                   AND cardnumbers = ${lastname});`;
-                await pool.query(query1);
-                const query2 = `SELECT * FROM cards 
-                   WHERE firstname = '${firstname}'
-                   AND lastname = '${lastname}'
-                   AND cardnumbers = ${lastname})` 
-                const result = await pool.query(query2)
-                cards.push(result.rows[0].id)
-                if(result.rows.length > 0){
-                    const query3 = `UPDATE users SET cards = ${cards.toString()} WHERE id = ${userID};`
-                    await pool.query(query3)
+            const result1 = await pool.query(query1, values);
+            if(result1.rows.length > 0){
+                const query1 = `SELECT * FROM cards 
+                        WHERE firstname = $1
+                        AND lastname = $2 
+                        AND cardnumbers = $3`
+                const values1 = [firstname, lastname, cardnumbers]
+                const result = await pool.query(query1, values1)
+                if(result.rows.length > 0) {}
+                else {
+                    const query2 = `INSERT INTO cards (firstname, lastname, cardnumbers)
+                    VALUES ($1, $2, $3)`;
+                    const values2 = [firstname, lastname, cardnumbers]
+                    await pool.query(query2, values2);
+                    const query3 = `SELECT * FROM cards 
+                    WHERE firstname = $1
+                    AND lastname = $2
+                    AND cardnumbers = $3` 
+                    const values3 = [firstname, lastname, cardnumbers]
+                    const result = await pool.query(query3, values3)
+                    cards.push(result.rows[0].id)
+                    if(result.rows.length > 0){
+                        const query3 = `UPDATE users SET cards = '${cards.toString()}' WHERE id = ${userID};`
+                        await pool.query(query3)
+                    }
                 }
             }
         } else {
             res.status(401).json({error: "Error while trying to upload card"})
         }
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
         res.status(500).json({ error: "Failed to verify token" });
     }
 });
@@ -187,7 +195,7 @@ app.post('/getpurchaseswithcard', async (req, res) => {
         lastname,
         cardnumbers
     } = req.body;
-
+    console.log(firstname, lastname, cardnumbers)
     try {
         const query = `SELECT * FROM conformedPurchases WHERE firstname = '${firstname}' AND lastname = '${lastname}' AND cardnumbers = ${cardnumbers}`;
         const result = await pool.query(query);
