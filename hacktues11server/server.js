@@ -216,8 +216,11 @@ app.post('/getusercards', async (req, res) => {
             const userID = result.rows[0].user_id
             const values = [userID];
             const result1 = await pool.query(query1, values); 
-            if (result1.rows.length > 0) {
+            if (result1.rows.length > 0 && result1.rows[0].cards !== "" && result1.rows[0].cards !== null) {
+                console.log("blyat")
                 res.json(result1.rows[0].cards.split(','))
+            }else{
+                res.json("")
             }
         }
     } catch (err) {
