@@ -24,7 +24,7 @@ const UserPage = () => {
     } else {
       setOrders([]); 
     }
-  }, [selectedCard]);
+  }, [selectedCard, newCard]);
 
   const checkAuth = async () => {
     const token = localStorage.getItem("authToken");
@@ -83,8 +83,8 @@ const UserPage = () => {
   };
 
   const fetchOrders = async (cardNumber) => {
-    const firstname = localStorage.getItem('firstname'); 
-    const lastname = localStorage.getItem('lastname');
+    const firstname = JSON.parse(localStorage.getItem("user")).firstname; 
+    const lastname = JSON.parse(localStorage.getItem("user")).lastname;
 
     try {
       const response = await fetch('http://localhost:5000/getpurchaseswithcard', {
@@ -111,11 +111,32 @@ const UserPage = () => {
     setShowAddCardPopup(true);
   };
 
-  const handleSaveCard = () => {
+  const handleSaveCard = async () => {
     if (newCard.digits.length === 4 && newCard.firstName ===  JSON.parse(localStorage.getItem("user")).firstname && newCard.lastName === JSON.parse(localStorage.getItem("user")).lastname) {
-      setCards([...cards, newCard.digits]);
-      setNewCard({ digits: '', firstName: '', lastName: '' });
-      setShowAddCardPopup(false);
+      // setCards([...cards, newCard.digits]);
+      // setNewCard({ digits: '', firstName: '', lastName: '' });
+      // setShowAddCardPopup(false);
+      const token = localStorage.getItem("authToken")
+      const firstname = JSON.parse(localStorage.getItem("user")).firstname; 
+      const lastname = JSON.parse(localStorage.getItem("user")).lastname;
+      const cardnumbers = newCard.digits
+      try {
+        const response = await fetch('http://localhost:5000/addcardtouser', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({token, firstname, lastname, cardnumbers}),
+        });
+    
+        if (response.ok) {
+          setNewCard({ digits: '', firstName: '', lastName: '' })
+        } else {
+          console.error('Failed to upload card');
+        }
+      } catch (error) {
+        console.error('Error uploading card:', error);
+      }
     } else {
       alert('Please fill all fields correctly.');
     }
