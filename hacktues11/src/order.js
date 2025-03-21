@@ -25,6 +25,7 @@ const Order = ({ order }) => {
     return (
       <>
         <tr className="main-row">
+        <td rowSpan={purchaseditems.length + 2}>{order.business}</td>
           <td rowSpan={purchaseditems.length + 2}>{formatDate(order.date)}</td>
           <td rowSpan={purchaseditems.length + 2}>{order.orderid}</td>
         </tr>

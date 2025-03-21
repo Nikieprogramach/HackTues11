@@ -2,7 +2,7 @@
 .user-page {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 94vh;
     padding: 20px;
   }
   
@@ -162,4 +162,8 @@
   
   .popup-content button:last-of-type:hover {
     background-color: #5a6268;
+  }
+
+  .h3-title{
+    margin: 0 0 10px 0;
   }

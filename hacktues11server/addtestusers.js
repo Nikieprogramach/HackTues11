@@ -18,9 +18,9 @@ async function insertExampleData() {
         var hash = bcrypt.hashSync("password", salt);
 
         const exampleData = {
-            firstname: 'Nikola',
-            lastname: 'Aleksov',
-            email: "nikola.aleksov8@gmail.com",
+            firstname: 'Gabriel',
+            lastname: 'Petrov',
+            email: "gabriel.petrov@gmail.com",
             password: hash,
             privileges: 'admin',
         };

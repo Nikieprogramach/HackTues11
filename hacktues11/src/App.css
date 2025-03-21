@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f0f0f0;
+  background-color: #e5f0f5 ;
 }
 
 .login-page h1 {
@@ -23,10 +23,12 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: white;
+  background-color: #c2d8e0  ;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  align-items: center;
+  width: 400px;
 }
 
 .login-page label {
@@ -37,22 +39,37 @@
 .login-page input {
   padding: 8px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: none;
+  border-bottom: 2px solid #0099cc ;
+  background-color: transparent;
+  width: 330px;
+  outline: none;
+}
+
+.createacountlink{
+  text-decoration: underline;
+}
+
+.createacountlink:hover{
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.login-page input:hover{
+  border-bottom: 2px solid #005aa0  ;
 }
 
 .login-page button{
   padding: 10px;
   font-size: 16px;
-  background-color: #007bff;
-  color: white;
+  background-color: #48a0ff;
+  color: #e5f0f5 ;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .login-page button[type = "submit"]:hover {
-  background-color: #0056b3;
+  background-color: #3b84d3;
 }
 
 .login-page button[type = "button"]{
@@ -97,6 +114,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  border: none;
   gap: 10px;
 }
 
@@ -114,9 +133,11 @@
 input[type = "text"] {
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 300px;
+  border: none;
+  border-bottom: 2px solid #0099cc ;
+  background-color: transparent;
+  outline: none;
+  width: 350px;
 }
 
 button {
@@ -125,7 +146,7 @@ button {
   border: none;
   border-radius: 4px;
   background-color: #007bff;
-  color: white;
+  color: #e5f0f5 ;
   cursor: pointer;
 }
 
@@ -154,7 +175,7 @@ button:disabled {
 .timespan-selector input[type="date"] {
   padding: 5px;
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: 1px solid #0099cc ;
   border-radius: 4px;
 }
 
@@ -171,7 +192,7 @@ table {
 }
 
 table th, table td {
-  border: 1px solid #ccc;
+  border: 1px solid #0099cc ;
   padding: 10px;
   text-align: left;
   word-wrap: break-word;
@@ -181,7 +202,7 @@ table th, table td {
 }
 
 table th {
-  background-color: #f0f0f0;
+  background-color: #e5f0f5 ;
   font-weight: bold;
   text-align: center;
 }

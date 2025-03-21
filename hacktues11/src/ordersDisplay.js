@@ -11,6 +11,7 @@ const OrdersDisplay = (props) => {
             <table>
                 <thead>
                 <tr>
+                    <th>Търговец</th>
                     <th>Дата и Време</th>
                     <th>Номер на поръчкта</th>
                     <th>Продукти</th>
@@ -24,7 +25,7 @@ const OrdersDisplay = (props) => {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="4">No results found.</td>
+                        <td colSpan="5">No results found.</td>
                     </tr>
                 )}
                 </tbody>

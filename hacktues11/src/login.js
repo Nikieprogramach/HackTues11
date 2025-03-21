@@ -58,18 +58,20 @@ const App = () => {
       {isSignUp && (
           <>
             <div>
-              <label>Първо име:</label>
+              {/* <label>Първо име:</label> */}
               <input
                 type="text"
+                placeholder='Първо име'
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
               />
             </div>
             <div>
-              <label>Фамилия:</label>
+              {/* <label>Фамилия:</label> */}
               <input
                 type="text"
+                placeholder='Фамилия'
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
@@ -78,18 +80,20 @@ const App = () => {
           </>
         )}
         <div>
-          <label>E-mail:</label>
+          {/* <label>E-mail:</label> */}
           <input
             type="email"
+            placeholder='Имейл'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div>
-          <label>Парола:</label>
+          {/* <label>Парола:</label> */}
           <input
             type="password"
+            placeholder='Парола'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -97,8 +101,8 @@ const App = () => {
         </div>
         {error && <p className="error">{error}</p>}
         <button type="submit">{isSignUp ? 'Създай акаунт' : 'Влез в акаунта си'}</button>
-        <p>{isSignUp ? 'Вече имате акаунт?' : 'Нямате акаунт?'}</p>
-        <button type="button" onClick={toggleForm}>{isSignUp ? 'Влизане в акаунт' : 'Създаване на нов акаунт'}</button>
+        <p>{isSignUp ? 'Вече имате акаунт?' : 'Нямате акаунт?'} <a className='createacountlink' onClick={toggleForm}>{isSignUp ? 'Влизане в акаунт' : 'Създаване на нов акаунт'}</a></p>
+        {/* <button type="button" onClick={toggleForm}>{isSignUp ? 'Влизане в акаунт' : 'Създаване на нов акаунт'}</button> */}
       </form>
     </div>
   );

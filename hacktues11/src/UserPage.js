@@ -28,6 +28,10 @@ const UserPage = () => {
     }
   }, [selectedCard, newCard]);
 
+  useEffect(() => {
+    fetchCards();
+  }, [cards])
+
   const checkAuth = async () => {
     const token = localStorage.getItem("authToken");
   
@@ -110,38 +114,12 @@ const UserPage = () => {
     }
   };
 
-  // const addCardToUSer = async (cardNumber) => {
-  //   const token = localStorage.getItem('token')
-  //   const firstname = JSON.parse(localStorage.getItem("user")).firstname; 
-  //   const lastname = JSON.parse(localStorage.getItem("user")).lastname;
-
-  //   try {
-  //     const response = await fetch('http://localhost:5000/addcardtouser', {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({token, cardNumber, firstname, lastname}),
-  //     });
-  
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setOrders(data); 
-  //     } else {
-  //       console.error('Failed to add card');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching orders:', error);
-  //   }
-  // };
-
   const handleAddCard = () => {
     setNewCard({ digits: '', firstName: '', lastName: '' });
     setShowAddCardPopup(true);
   };
 
   const handleSaveCard = async () => {
-    console.log("sasdas")
     if (newCard.digits.length === 4 && 
       newCard.firstname ===  JSON.parse(localStorage.getItem("user")).firstname && 
       newCard.lastname === JSON.parse(localStorage.getItem("user")).lastname
@@ -161,7 +139,7 @@ const UserPage = () => {
     
         if (response.ok) {
           setNewCard({ digits: '', firstName: '', lastName: '' })
-          setCards(prevCards => (Array.isArray(prevCards) ? [...prevCards, newCard.digits] : [newCard.digits]));
+          // setCards(prevCards => (Array.isArray(prevCards) ? [...prevCards, newCard.digits] : [newCard.digits]));
           setNewCard({ digits: '', firstname: '', lastname: '' });
           setShowAddCardPopup(false);
         } else {
@@ -192,8 +170,9 @@ const UserPage = () => {
       </div>
       <div className="main-content">
         <div className="left-section">
-          {/* <h3>Вашите карти</h3> */}
+
           <div className="card-list">
+            <h3 className='h3-title'>Вашите карти</h3>
             {cards &&
             <>
             {cards.map((card, index) => (
@@ -202,7 +181,7 @@ const UserPage = () => {
                 className={`card-item ${selectedCard === card ? 'selected' : ''}`}
                 onClick={() => setSelectedCard(card)}
               >
-                {card.cardnumbers}
+                ************{card.cardnumbers}
               </div>
             ))}</>}
           </div>

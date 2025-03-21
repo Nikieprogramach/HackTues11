@@ -204,7 +204,6 @@ app.post('/getpurchaseswithcard', async (req, res) => {
         lastname,
         cardnumbers
     } = req.body;
-    console.log(firstname, lastname, cardnumbers)
     try {
         const query = `SELECT * FROM conformedPurchases WHERE firstname = '${firstname}' AND lastname = '${lastname}' AND cardnumbers = ${cardnumbers}`;
         const result = await pool.query(query);
