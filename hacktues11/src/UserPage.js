@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext';
 import OrdersDisplay from './orders_table_elements/ordersDisplay';
 import CardList from './user_page_elements/cardList';
 import AddCardPopup from './user_page_elements/addCardPopup';
+import AddIbanPopup from './user_page_elements/addIbanPopup';
 import TimeSpanSelector from './orders_table_elements/timespanSelector';
 import './App.css';
 import './UserPage.css';
@@ -14,7 +15,10 @@ const UserPage = () => {
   const [cards, setCards] = useState([]); 
   const [selectedCard, setSelectedCard] = useState(); 
   const [orders, setOrders] = useState([]);
+  const [iban, setIban] = useState('');
+  const [bank, setBank] = useState('');
   const [showAddCardPopup, setShowAddCardPopup] = useState(false);
+  const [showAddIbanPopup, setShowAddIbanPopup] = useState(false);
   const [newCard, setNewCard] = useState({ digits: '', firstname: '', lastname: '' });
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
@@ -31,7 +35,7 @@ const UserPage = () => {
     } else {
       setOrders([]); 
     }
-  }, [selectedCard, newCard]);
+  }, [selectedCard]);
 
   // const sortOrders = () =>{
   //     const sortedOrders = orders.sort((a, b) => {
@@ -156,9 +160,20 @@ const UserPage = () => {
     }
   }
 
-  const handleAddIban = () => {
-    //
-  }
+  const handleIbanSubmit = () => {
+    console.log("entered");
+    const ibanPattern = /^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$/;
+    if (!ibanPattern.test(iban)) {
+      alert('Моля въведете валиден IBAN.');
+    } else if(!bank){
+      alert('Моля въведете име на банка')
+    }
+    else {
+      // Your function to process the IBAN here
+      setShowAddIbanPopup(false);
+    }
+  };
+
 
   return (
     <div className="user-page">
@@ -174,7 +189,7 @@ const UserPage = () => {
         <div className="left-section">
 
           <CardList cards={cards} selectedCard={selectedCard} setSelectedCard={setSelectedCard} />
-          <button className="add-iban-button" onClick={handleAddIban}>
+          <button className="add-iban-button" onClick={() => setShowAddIbanPopup(true)}>
             Добавете IBAN и банка
           </button>
           <button className="add-card-button" onClick={() => { setNewCard({ digits: '', firstName: '', lastName: '' }); setShowAddCardPopup(true);}}>
@@ -184,7 +199,6 @@ const UserPage = () => {
 
         <div className="right-section">
         <TimeSpanSelector fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} />
-          {/* <h3>Поръчки с избраната карта</h3> */}
           {selectedCard ? (
             <OrdersDisplay key={orders.length} orders={orders} hasSearched={true} />
           ) : (
@@ -192,8 +206,9 @@ const UserPage = () => {
           )}
         </div>
       </div>
-      {showAddCardPopup && (  <AddCardPopup setShowAddCardPopup={setShowAddCardPopup} setNewCard={setNewCard} newCard={newCard} handleSaveCard={handleSaveCard}/>
+      {showAddCardPopup && (<AddCardPopup setShowAddCardPopup={setShowAddCardPopup} setNewCard={setNewCard} newCard={newCard} handleSaveCard={handleSaveCard}/>
       )}
+      {showAddIbanPopup && (<AddIbanPopup setShowAddIbanPopup={setShowAddIbanPopup} setIban={setIban} iban={iban} setBank={setBank} bank={bank} handleIbanSubmit={handleIbanSubmit}/>)}
     </div>
   );
 };
