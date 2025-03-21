@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import './App.css';
+import { useAuth } from "./AuthContext";
 
 const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -16,13 +18,15 @@ const App = () => {
       return;
     }
 
-    if (email === 'admin@example.com' && password === 'admin123') {
-      navigate('/admin');
-    } else if (email === 'user@example.com' && password === 'user123') {
-      navigate('/user');
-    } else {
-      setError('Invalid email or password');
-    }
+    login(email, password);
+
+    // if (email === 'admin@example.com' && password === 'admin123') {
+    //   navigate('/admin');
+    // } else if (email === 'user@example.com' && password === 'user123') {
+    //   navigate('/user');
+    // } else {
+    //   setError('Invalid email or password');
+    // }
   };
 
   const validateEmail = (email) => {

@@ -14,6 +14,45 @@ const AdminPage = () => {
   const [toDate, setToDate] = useState('');
   const [data, setData] = useState([]); 
 
+  const navigate = useNavigate();
+
+  const checkAuth = async () => {
+    const token = localStorage.getItem("authToken");
+  
+    if (token) {
+      try {
+        const response = await fetch(`http://localhost:5000/verifytoken`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({token}),
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          if(data.valid){
+            navigate("/admin");
+          }else {
+            localStorage.setItem("authToken", null);
+            localStorage.setItem("privileges", null);
+            navigate("/login")
+          }
+        } 
+      } catch (error) {
+        localStorage.setItem("authToken", null);
+        localStorage.setItem("privileges", null);
+        navigate("/login")
+      }
+    } else {
+      navigate("/login");
+    }
+  };
+  
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
   const parseDate = (dateStr) => {
     const [day, month, year] = dateStr.split('.');
     return new Date(`${year}-${month}-${day}`);

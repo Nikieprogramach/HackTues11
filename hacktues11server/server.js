@@ -3,6 +3,7 @@ const PORT = process.env.PORT || 5000;
 const { Pool } = require('pg');
 require('dotenv').config();
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 
 const options = {
 origin: ["http://localhost:3000"],
@@ -20,6 +21,15 @@ const pool = new Pool({
     port: process.env.PORT,
 });
 
+function generateToken() {
+    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var token = '';
+    for(var i = 0; i < 50; i++) {
+        token += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return token;
+  }
+
 app.post('/getOrdersFromShop', async (req, res) => {
     res.set('Access-Control-Allow-Origin', 'http://localhost:3000')
     const {
@@ -33,23 +43,23 @@ app.post('/getOrdersFromShop', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    res.set('Access-Control-Allow-Origin', 'https://nikola.aleksovi.com')
+    res.set('Access-Control-Allow-Origin', 'http://localhost:3000')
     const {
-        username,
+        email,
         password
     } = req.body;
 
     const cleanupQuery = `SELECT * FROM authTokens WHERE CURRENT_TIMESTAMP > expires_at`
     const ress = await pool.query(cleanupQuery);
-    console.log(ress.rows)
     for(var i = 0; i < ress.rows.length; i++){
         await pool.query(`DELETE FROM authTokens WHERE id = ${ress.rows[i].id}`);
     }
-
-    const query = `SELECT * FROM users WHERE name = $1`;
-    const values = [username];  
+    console.log(email)
+    const query = `SELECT * FROM users WHERE email = '${email}'`;
+    const values = [email];  
     try {
-        const result = await pool.query(query, values);
+        const result = await pool.query(query);
+        console.log()
         if (result.rows.length > 0) {
         const heshPass = result.rows[0].password;
         if(bcrypt.compareSync(password, heshPass)){
@@ -60,7 +70,7 @@ app.post('/login', async (req, res) => {
             } catch (error) {
                 console.error("Database Insert Error:", error);
             }
-            res.json({"token": token})
+            res.json({"token": token, "privileges": result.rows[0].privileges})
         }else{
             res.status(401).json({ error: "Invalid password" });
         }
