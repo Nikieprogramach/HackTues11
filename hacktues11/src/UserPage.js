@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from './AuthContext';
-import OrdersDisplay from './ordersDisplay';
+import OrdersDisplay from './orders_table_elements/ordersDisplay';
+import CardList from './user_page_elements/cardList';
+import AddCardPopup from './user_page_elements/addCardPopup';
+import AddIbanPopup from './user_page_elements/addIbanPopup';
+import TimeSpanSelector from './orders_table_elements/timespanSelector';
 import './App.css';
 import './UserPage.css';
 
 const UserPage = () => {
   const navigate = useNavigate();
-  const { logout, user } = useAuth(); // Assuming user data is available in AuthContext
-  const [cards, setCards] = useState([]); // List of card numbers
-  const [selectedCard, setSelectedCard] = useState(); // Selected card number
-  const [orders, setOrders] = useState([]); // Orders for the selected card
-  const [showAddCardPopup, setShowAddCardPopup] = useState(false); // Popup visibility
+  const { logout, user } = useAuth();
+  const [cards, setCards] = useState([]); 
+  const [selectedCard, setSelectedCard] = useState(); 
+  const [orders, setOrders] = useState([]);
+  const [iban, setIban] = useState('');
+  const [bank, setBank] = useState('');
+  const [showAddCardPopup, setShowAddCardPopup] = useState(false);
+  const [showAddIbanPopup, setShowAddIbanPopup] = useState(false);
   const [newCard, setNewCard] = useState({ digits: '', firstname: '', lastname: '' });
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
@@ -28,7 +35,7 @@ const UserPage = () => {
     } else {
       setOrders([]); 
     }
-  }, [selectedCard, newCard]);
+  }, [selectedCard]);
 
   // const sortOrders = () =>{
   //     const sortedOrders = orders.sort((a, b) => {
@@ -120,11 +127,6 @@ const UserPage = () => {
     }
   };
 
-  const handleAddCard = () => {
-    setNewCard({ digits: '', firstName: '', lastName: '' });
-    setShowAddCardPopup(true);
-  };
-
   const handleSaveCard = async () => {
     if (newCard.digits.length === 4 && 
       newCard.firstname ===  JSON.parse(localStorage.getItem("user")).firstname && 
@@ -144,9 +146,8 @@ const UserPage = () => {
         });
     
         if (response.ok) {
-          setNewCard({ digits: '', firstName: '', lastName: '' })
-          // setCards(prevCards => (Array.isArray(prevCards) ? [...prevCards, newCard.digits] : [newCard.digits]));
-          setNewCard({ digits: '', firstname: '', lastname: '' });
+          setCards(prevCards => (Array.isArray(prevCards) ? [...prevCards, { cardnumbers: newCard.digits, firstname: newCard.firstname, lastname: newCard.lastname }] : [{ cardnumbers: newCard.digits, firstname: newCard.firstname, lastname: newCard.lastname }]));
+          setNewCard({ digits: '', firstname: '', lastname: '' })
           setShowAddCardPopup(false);
         } else {
           console.error('Failed to upload card');
@@ -157,61 +158,47 @@ const UserPage = () => {
     } else {
       alert('Please fill all fields correctly.');
     }
-
-    
   }
-  const handleLogout = () => {
-    logout();
+
+  const handleIbanSubmit = () => {
+    console.log("entered");
+    const ibanPattern = /^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$/;
+    if (!ibanPattern.test(iban)) {
+      alert('Моля въведете валиден IBAN.');
+    } else if(!bank){
+      alert('Моля въведете име на банка')
+    }
+    else {
+      // Your function to process the IBAN here
+      setShowAddIbanPopup(false);
+    }
   };
-  
+
+
   return (
     <div className="user-page">
       <div className="top-bar">
         <div className="welcome-message">
            Добре дошли {JSON.parse(localStorage.getItem("user")).firstname} {JSON.parse(localStorage.getItem("user")).lastname}!
         </div>
-        <button className="logout-button-user" onClick={handleLogout}>
+        <button className="logout-button-user" onClick={logout}>
           Излизане от акаунта
         </button>
       </div>
       <div className="main-content">
         <div className="left-section">
 
-          <div className="card-list">
-            <h3 className='h3-title'>Вашите карти</h3>
-            {cards &&
-            <>
-            {cards.map((card, index) => (
-              <div
-                key={index}
-                className={`card-item ${selectedCard === card ? 'selected' : ''}`}
-                onClick={() => setSelectedCard(card)}
-              >
-                ************{card.cardnumbers}
-              </div>
-            ))}</>}
-          </div>
-          <button className="add-card-button" onClick={handleAddCard}>
+          <CardList cards={cards} selectedCard={selectedCard} setSelectedCard={setSelectedCard} />
+          <button className="add-iban-button" onClick={() => setShowAddIbanPopup(true)}>
+            Добавете IBAN и банка
+          </button>
+          <button className="add-card-button" onClick={() => { setNewCard({ digits: '', firstName: '', lastName: '' }); setShowAddCardPopup(true);}}>
             Добавете карта
           </button>
         </div>
 
         <div className="right-section">
-        <div className='timespan-selector'>
-            <label>От дата:</label>
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-            />
-            <label>до дата:</label>
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-            />
-          </div>
-          {/* <h3>Поръчки с избраната карта</h3> */}
+        <TimeSpanSelector fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} />
           {selectedCard ? (
             <OrdersDisplay key={orders.length} orders={orders} hasSearched={true} />
           ) : (
@@ -219,35 +206,9 @@ const UserPage = () => {
           )}
         </div>
       </div>
-      {showAddCardPopup && (
-        <div className="popup-overlay">
-          <div className="popup-content">
-            <h3>Добавете нова карта</h3>
-            <input
-              type="text"
-              placeholder="Последните 4 цифри на картата"
-              // value={newCard.digits}
-              onChange={(e) => setNewCard({ ...newCard, digits: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Първо Име"
-              // value={newCard.firstname}
-              onChange={(e) => setNewCard({ ...newCard, firstname: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Фамилия"
-              // value={newCard.lastname}
-              onChange={(e) => setNewCard({ ...newCard, lastname: e.target.value })}
-            />
-            <div className="popup-buttons">
-              <button onClick={handleSaveCard}>Запазване</button>
-              <button onClick={() => setShowAddCardPopup(false)}>Прекратяване</button>
-            </div>
-          </div>
-        </div>
+      {showAddCardPopup && (<AddCardPopup setShowAddCardPopup={setShowAddCardPopup} setNewCard={setNewCard} newCard={newCard} handleSaveCard={handleSaveCard}/>
       )}
+      {showAddIbanPopup && (<AddIbanPopup setShowAddIbanPopup={setShowAddIbanPopup} setIban={setIban} iban={iban} setBank={setBank} bank={bank} handleIbanSubmit={handleIbanSubmit}/>)}
     </div>
   );
 };
