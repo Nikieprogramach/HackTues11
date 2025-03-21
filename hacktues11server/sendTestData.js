@@ -37,9 +37,9 @@ function testOrder() {
 function testPayment() {
     const payment = {
         orderID: 12345,
-        firstname: "John",
-        lastname: "Doe",
-        cardnums: "5432",
+        firstname: "Nikola",
+        lastname: "Aleksov",
+        cardnums: "1346",
         amount: 30.0
     };
     
