@@ -83,6 +83,34 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.post('/signup', async (req, res) => {
+    res.set('Access-Control-Allow-Origin', 'http://localhost:3000')
+    const {
+        firstname,
+        lastname,
+        email,
+        password
+    } = req.body;
+
+    const query = `SELECT * FROM users WHERE email = '${email}'`;
+    try {
+        const result = await pool.query(query);
+        console.log()
+        if (result.rows.length > 0) {
+            res.status(401).json({ error: "Account with that username already exists" });
+        } else {
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(password, salt);
+
+            const query1 = `INSERT INTO users (firstname, lastname, email, password) VALUES ('${firstname}', '${lastname}', '${email}', '${hash}')`
+        }
+    } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to login" });
+    }
+});
+
+
 app.post('/verifytoken', async (req, res) => {
     const {
         token
