@@ -24,7 +24,7 @@ const OrdersDisplay = (props) => {
                     ))
                 ) : (
                     <tr>
-                    <td colSpan="4">No results found.</td>
+                        <td colSpan="4">No results found.</td>
                     </tr>
                 )}
                 </tbody>

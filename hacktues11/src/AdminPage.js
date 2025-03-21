@@ -64,21 +64,15 @@ const AdminPage = () => {
   //     const from = fromDate ? new Date(fromDate) : null;
   //     const to = toDate ? new Date(toDate) : null;
 
-  //     return (
-  //       (!from || orderDate >= from) && 
-  //       (!to || orderDate <= to) 
-  //     );
-  //   });
-  // };
+      return (
+        (!from || orderDate >= from) && 
+        (!to || orderDate <= to) 
+      );
+    });
+  };
 
   const handleSearch = async () => {
     if (searchQuery.trim()) {
-        // if (!hasSearched) {
-        //     const today = new Date().toISOString().split('T')[0];
-        //     setFromDate('');
-        //     setToDate(today);
-        // }
-
         try {
             const response = await fetch('http://localhost:5000/getOrdersFromShop', {
                 method: 'POST',
@@ -97,32 +91,30 @@ const AdminPage = () => {
 
             console.log("Fetched Data:", result);
 
-            setData(result);
-            setSearchResults(result)
+            const sortedResults = result.sort((a, b) => {
+              const dateA = new Date(a.date);
+              const dateB = new Date(b.date);
+              return dateB - dateA; 
+            });
+
+            setSortedData(sortedResults)
+            const filteredResults = filterResultsByTimespan(sortedResults);
+            setSearchResults(filteredResults);
             setHasSearched(true);
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            setData([]);
-            setSearchResults([]); // Clear results in case of error
+            setSearchResults([]);
         }
     }
 };
 
-  // useEffect(() => {
-  //   if (hasSearched) {
-  //     const filteredResults = filterResultsByTimespan(sortedData);
-  //     setSearchResults(filteredResults);
-  //   }
-  // }, [fromDate, toDate]);
-
   useEffect(() => {
-    if (data.length > 0) {
-      setSearchResults(data);
-  } else {
-      setSearchResults([]);
-  }
-}, [data]);
+    if (hasSearched) {
+      const filteredResults = filterResultsByTimespan(sortedData);
+      setSearchResults(filteredResults);
+    }
+  }, [fromDate, toDate]);
 
   return (
     <div className="App">
