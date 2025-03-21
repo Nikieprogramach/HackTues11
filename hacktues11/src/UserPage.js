@@ -13,6 +13,8 @@ const UserPage = () => {
   const [orders, setOrders] = useState([]); // Orders for the selected card
   const [showAddCardPopup, setShowAddCardPopup] = useState(false); // Popup visibility
   const [newCard, setNewCard] = useState({ digits: '', firstname: '', lastname: '' });
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   
 
   useEffect(() => {
@@ -28,9 +30,14 @@ const UserPage = () => {
     }
   }, [selectedCard, newCard]);
 
-  useEffect(() => {
-    fetchCards();
-  }, [cards])
+  // const sortOrders = () =>{
+  //     const sortedOrders = orders.sort((a, b) => {
+  //     const dateA = new Date(a.date);
+  //     const dateB = new Date(b.date);
+  //     return dateB - dateA; 
+  //   });
+  //   setOrders(sortedOrders);
+  // };
 
   const checkAuth = async () => {
     const token = localStorage.getItem("authToken");
@@ -79,7 +86,6 @@ const UserPage = () => {
   
       if (response.ok) {
         const data = await response.json();
-        console.log(data)
         setCards(data); 
       } else {
         console.error('Failed to fetch orders');
@@ -164,7 +170,7 @@ const UserPage = () => {
         <div className="welcome-message">
            Добре дошли {JSON.parse(localStorage.getItem("user")).firstname} {JSON.parse(localStorage.getItem("user")).lastname}!
         </div>
-        <button className="logout-button" onClick={handleLogout}>
+        <button className="logout-button-user" onClick={handleLogout}>
           Излизане от акаунта
         </button>
       </div>
@@ -191,6 +197,20 @@ const UserPage = () => {
         </div>
 
         <div className="right-section">
+        <div className='timespan-selector'>
+            <label>От дата:</label>
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+            <label>до дата:</label>
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+            />
+          </div>
           {/* <h3>Поръчки с избраната карта</h3> */}
           {selectedCard ? (
             <OrdersDisplay key={orders.length} orders={orders} hasSearched={true} />

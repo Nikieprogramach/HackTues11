@@ -5,7 +5,6 @@ import Order from './order';
 
 const OrdersDisplay = (props) => {
     const [orders, setOrders] = useState(props.orders);
-    console.log("orders", orders)
     return(
         <div className={`content ${props.hasSearched ? 'fade-in' : ''}`}>
             <table>
