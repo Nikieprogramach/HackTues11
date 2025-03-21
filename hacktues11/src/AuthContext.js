@@ -23,7 +23,9 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("authToken", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         console.log(data.token);
-        if(data.privileges === "admin"){
+        console.log(data.user.privileges === "admin");
+        console.log(data);
+        if(data.user.privileges === "admin"){
           navigate("/admin");
         }else{
           navigate("/user");

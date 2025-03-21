@@ -10,7 +10,6 @@ const App = () => {
   const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
-  const navigate = useNavigate();
   const { login, signup } = useAuth();
 
   const handleLogin = (e) => {
