@@ -155,8 +155,8 @@ const UserPage = () => {
 
   const handleSaveCard = async () => {
     if (newCard.digits.length === 4 && 
-      newCard.firstName ===  JSON.parse(localStorage.getItem("user")).firstname && 
-      newCard.lastName === JSON.parse(localStorage.getItem("user")).lastname
+      newCard.firstname ===  JSON.parse(localStorage.getItem("user")).firstname && 
+      newCard.lastname === JSON.parse(localStorage.getItem("user")).lastname
     ) {
       const token = localStorage.getItem("authToken")
       const firstname = JSON.parse(localStorage.getItem("user")).firstname; 
@@ -173,6 +173,9 @@ const UserPage = () => {
     
         if (response.ok) {
           setNewCard({ digits: '', firstName: '', lastName: '' })
+          setCards(prevCards => (Array.isArray(prevCards) ? [...prevCards, newCard.digits] : [newCard.digits]));
+          setNewCard({ digits: '', firstname: '', lastname: '' });
+          setShowAddCardPopup(false);
         } else {
           console.error('Failed to upload card');
         }
@@ -182,6 +185,8 @@ const UserPage = () => {
     } else {
       alert('Please fill all fields correctly.');
     }
+
+    
   }
   const handleLogout = () => {
     logout();
