@@ -70,7 +70,7 @@ app.post('/login', async (req, res) => {
             } catch (error) {
                 console.error("Database Insert Error:", error);
             }
-            res.json({"token": token, "privileges": result.rows[0].privileges})
+            res.json({"token": token, "user": {'firstname': result.rows[0].firstname, 'lastname': result.rows[0].lastname, "privileges": result.rows[0].privileges}})
         }else{
             res.status(401).json({ error: "Invalid password" });
         }
@@ -217,7 +217,7 @@ app.post('/getusercards', async (req, res) => {
             const values = [userID];
             const result1 = await pool.query(query1, values); 
             if (result1.rows.length > 0) {
-                res.json(result1.rows[0].cards)
+                res.json(result1.rows[0].cards.split(','))
             }
         }
     } catch (err) {
