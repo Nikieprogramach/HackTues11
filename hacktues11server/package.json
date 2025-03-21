@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": ""
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "express": "^4.21.2",
     "google-protobuf": "^3.21.4",
     "grpc-tools": "^1.13.0",
+    "napi-grpc-lib": "file:../library",
     "pg": "^8.14.1",
     "protobufjs": "^7.4.0",
     "protoc-gen-js": "^3.21.4-4"

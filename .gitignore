@@ -4,6 +4,7 @@
 /node_modules
 /hacktues11/node_modules
 /hacktues11server/node_modules
+/library/node_modules
 /.pnp
 .pnp.js
 
