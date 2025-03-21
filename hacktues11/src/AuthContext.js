@@ -36,13 +36,33 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signup = async (firstname, lastname, email, password) => {
+    try {
+      const response = await fetch(`http://localhost:5000/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({firstname, lastname, email, password}),
+      });
+
+      if (response.ok) {
+        navigate("/login")
+      } else {
+        console.error("Failed to create account");
+      }
+    } catch (error) {
+      console.error("Error creating account:", error);
+    }
+  }
+
   const logout = () => {
     setUser(null);
     navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

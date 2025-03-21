@@ -103,6 +103,7 @@ app.post('/signup', async (req, res) => {
             var hash = bcrypt.hashSync(password, salt);
             const query1 = `INSERT INTO users (firstname, lastname, email, password) VALUES ('${firstname}', '${lastname}', '${email}', '${hash}')`
             await pool.query(query1);
+            res.json("Acount created successfully")
         }
     } catch (err) {
         console.error(err.message);
