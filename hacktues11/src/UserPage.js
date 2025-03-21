@@ -173,6 +173,9 @@ const UserPage = () => {
     
         if (response.ok) {
           setNewCard({ digits: '', firstName: '', lastName: '' })
+          setCards(prevCards => (Array.isArray(prevCards) ? [...prevCards, newCard.digits] : [newCard.digits]));
+          setNewCard({ digits: '', firstname: '', lastname: '' });
+          setShowAddCardPopup(false);
         } else {
           console.error('Failed to upload card');
         }
@@ -182,6 +185,8 @@ const UserPage = () => {
     } else {
       alert('Please fill all fields correctly.');
     }
+
+    
   }
   const handleLogout = () => {
     logout();

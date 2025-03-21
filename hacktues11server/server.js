@@ -178,6 +178,7 @@ app.post('/addcardtouser', async (req, res) => {
                         const query3 = `UPDATE users SET cards = '${cards.toString()}' WHERE id = ${userID};`
                         await pool.query(query3)
                     }
+                    res.json({ok:"ok"})
                 }
             }
         } else {
