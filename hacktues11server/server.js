@@ -148,12 +148,14 @@ app.post('/addcardtouser', async (req, res) => {
             const query1 = `SELECT * FROM users WHERE id = $1`;
             const userID = result.rows[0].user_id
             const values = [userID];
-            if(result.rows[0].cards !== "" && result.rows[0].cards !== null){
-                var cards = toString(result.rows[0].cards).split(',')
-            }else{
-                var cards = []
-            }
             const result1 = await pool.query(query1, values);
+            if(result1.rows[0].cards !== "" && result1.rows[0].cards !== null && result1.rows[0].cards !== undefined){
+                var cards = result1.rows[0].cards
+                console.log("cards:",cards)
+            }else{
+                var cards = ""
+            }
+            
             if(result1.rows.length > 0){
                 const query1 = `SELECT * FROM cards 
                         WHERE firstname = $1
@@ -173,9 +175,15 @@ app.post('/addcardtouser', async (req, res) => {
                     AND cardnumbers = $3` 
                     const values3 = [firstname, lastname, cardnumbers]
                     const result = await pool.query(query3, values3)
-                    cards.push(result.rows[0].id)
+                    // cards.push()
                     if(result.rows.length > 0){
-                        const query3 = `UPDATE users SET cards = '${cards.toString()}' WHERE id = ${userID};`
+                        console.log("cards", cards)
+                        if(cards === ""){
+                            var cardstoupload = result.rows[0].id
+                        }else{
+                            var cardstoupload = cards + "," + result.rows[0].id
+                        }
+                        const query3 = `UPDATE users SET cards = '${cardstoupload}' WHERE id = ${userID};`
                         await pool.query(query3)
                     }
                     res.json({ok:"ok"})
@@ -202,9 +210,9 @@ app.post('/getpurchaseswithcard', async (req, res) => {
         const result = await pool.query(query);
 
         if (result.rows.length > 0) {
-        res.json(result.rows);
+            res.json(result.rows);
         } else {
-        res.json("No payments made with this card yet");
+            res.json([]);
         }
     } catch (err) {
         console.error(err.message);
@@ -225,9 +233,17 @@ app.post('/getusercards', async (req, res) => {
             const userID = result.rows[0].user_id
             const values = [userID];
             const result1 = await pool.query(query1, values); 
+            // var usercards = result1.rows[0].cards.split(',').filter(card => !(isNaN(card) || card === "" || card === undefined || card === null));
             if (result1.rows.length > 0 && result1.rows[0].cards !== "" && result1.rows[0].cards !== null) {
-                console.log("blyat")
-                res.json(result1.rows[0].cards.split(','))
+                if (result1.rows[0].cards.includes(",")) {
+                    search = result1.rows[0].cards.split(',').map(Number).filter(card => !(isNaN(card) || card === "" || card === undefined || card === null));;
+                } else {
+                    search = [Number(result1.rows[0].cards).filter(card => !(isNaN(card) || card === "" || card === undefined || card === null))];
+                }
+                
+                const query2 = `SELECT * FROM cards WHERE id = ANY($1::int[])`;
+                const response = await pool.query(query2, [search]);
+                res.json(response.rows)
             }else{
                 res.json("")
             }

@@ -9,10 +9,11 @@ const UserPage = () => {
   const navigate = useNavigate();
   const { logout, user } = useAuth(); // Assuming user data is available in AuthContext
   const [cards, setCards] = useState([]); // List of card numbers
-  const [selectedCard, setSelectedCard] = useState(null); // Selected card number
+  const [selectedCard, setSelectedCard] = useState(); // Selected card number
   const [orders, setOrders] = useState([]); // Orders for the selected card
   const [showAddCardPopup, setShowAddCardPopup] = useState(false); // Popup visibility
   const [newCard, setNewCard] = useState({ digits: '', firstname: '', lastname: '' });
+  
 
   useEffect(() => {
     checkAuth();
@@ -61,66 +62,52 @@ const UserPage = () => {
   };
 
   const fetchCards = async () => {
-    // const token = localStorage.getItem('authToken'); 
+    const token = localStorage.getItem("authToken");
 
-    // try {
-    //   const response = await fetch('http://localhost:5000/getusercards', {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({token}),
-    //   });
+    try {
+      const response = await fetch('http://localhost:5000/getusercards', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({token}),
+      });
   
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     setCards(data.cards); 
-    //   } else {
-    //     console.error('Failed to fetch cards');
-    //   }
-    // } catch (error) {
-    //   console.error('Error fetching cards:', error);
-    // }
-    setCards(['1234', '3421', '2312']);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data)
+        setCards(data); 
+      } else {
+        console.error('Failed to fetch orders');
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
   };
 
-  const fetchOrders = async (cardNumber) => {
+  const fetchOrders = async () => {
     const firstname =  JSON.parse(localStorage.getItem("user")).firstname; 
     const lastname = JSON.parse(localStorage.getItem("user")).lastname;
-
-    // try {
-    //   const response = await fetch('http://localhost:5000/getpurchaseswithcard', {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({firstname, lastname, cardNumber}),
-    //   });
-  
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     setOrders(data); 
-    //   } else {
-    //     console.error('Failed to fetch orders');
-    //   }
-    // } catch (error) {
-    //   console.error('Error fetching orders:', error);
-    // }
-    const response = await fetch('http://localhost:5000/getOrdersFromShop', {
-      method: 'POST',
-      headers: {
+    const cardnumbers = selectedCard.cardnumbers
+    console.log(cardnumbers)
+    try {
+      const response = await fetch('http://localhost:5000/getpurchaseswithcard', {
+        method: "POST",
+        headers: {
           "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ business: 'Example Business' }),
-      mode: 'cors'
-  });
-
-  if (!response.ok) {
-      throw new Error('Failed to fetch data');
-  }
-
-  const result = await response.json();
-  setOrders(result);
+        },
+        body: JSON.stringify({firstname, lastname, cardnumbers}),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data); 
+      } else {
+        console.error('Failed to fetch orders');
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
   };
 
   // const addCardToUSer = async (cardNumber) => {
@@ -154,6 +141,7 @@ const UserPage = () => {
   };
 
   const handleSaveCard = async () => {
+    console.log("sasdas")
     if (newCard.digits.length === 4 && 
       newCard.firstname ===  JSON.parse(localStorage.getItem("user")).firstname && 
       newCard.lastname === JSON.parse(localStorage.getItem("user")).lastname
@@ -214,7 +202,7 @@ const UserPage = () => {
                 className={`card-item ${selectedCard === card ? 'selected' : ''}`}
                 onClick={() => setSelectedCard(card)}
               >
-                {card}
+                {card.cardnumbers}
               </div>
             ))}</>}
           </div>
