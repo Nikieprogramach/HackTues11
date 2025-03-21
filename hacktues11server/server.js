@@ -28,7 +28,7 @@ function generateToken() {
         token += chars[Math.floor(Math.random() * chars.length)];
     }
     return token;
-  }
+}
 
 app.post('/getOrdersFromShop', async (req, res) => {
     res.set('Access-Control-Allow-Origin', 'http://localhost:3000')
@@ -101,12 +101,12 @@ app.post('/signup', async (req, res) => {
         } else {
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
-
             const query1 = `INSERT INTO users (firstname, lastname, email, password) VALUES ('${firstname}', '${lastname}', '${email}', '${hash}')`
+            await pool.query(query1);
         }
     } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Failed to login" });
+        console.error(err.message);
+        res.status(500).json({ error: "Failed to login" });
     }
 });
 
@@ -129,6 +129,77 @@ app.post('/verifytoken', async (req, res) => {
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ error: "Failed to verify token" });
+    }
+});
+
+app.post('/addcardtouser', async (req, res) => {
+    const {
+        token,
+        cardnumbers,
+        firstname,
+        lastname
+    } = req.body;
+
+    try {
+        const query = `SELECT * FROM authtokens WHERE token = $1 AND CURRENT_TIMESTAMP < expires_at`;
+        const values = [token];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length > 0) {
+            const query1 = `SELECT * FROM users WHERE id = $1`;
+            const userID = result.rows[0].user_id
+            const values = [userID];
+            if(result.rows[0].cards !== ""){
+                var cards = result.rows[0].cards.split(',')
+            }else{
+                var cards = []
+            }
+            const result = await pool.query(query1, values);
+            if(result.rows.length > 0){
+                const query1 = `INSERT INTO cards (firstname, lastname, cardnumbers) VALUES ('${firstname}', '${lastname}', '${cardnumbers}') WHERE NOT EXISTS ( SELECT * FROM cards 
+                   WHERE firstname = '${firstname}'
+                   AND lastname = '${lastname}'
+                   AND cardnumbers = ${lastname});`;
+                await pool.query(query1);
+                const query2 = `SELECT * FROM cards 
+                   WHERE firstname = '${firstname}'
+                   AND lastname = '${lastname}'
+                   AND cardnumbers = ${lastname})` 
+                const result = await pool.query(query2)
+                cards.push(result.rows[0].id)
+                if(result.rows.length > 0){
+                    const query3 = `UPDATE users SET cards = ${cards.toString()} WHERE id = ${userID};`
+                    await pool.query(query3)
+                }
+            }
+        } else {
+            res.status(401).json({error: "Error while trying to upload card"})
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Failed to verify token" });
+    }
+});
+
+app.post('/getpurchaseswithcard', async (req, res) => {
+    const {
+        firstname,
+        lastname,
+        cardnumbers
+    } = req.body;
+
+    try {
+        const query = `SELECT * FROM conformedPurchases WHERE firstname = '${firstname}' AND lastname = '${lastname}' AND cardnumbers = ${cardnumbers}`;
+        const result = await pool.query(query);
+
+        if (result.rows.length > 0) {
+        res.json(result.rows);
+        } else {
+        res.json("No payments made with this card yet");
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Failed to get payments" });
     }
 });
 
