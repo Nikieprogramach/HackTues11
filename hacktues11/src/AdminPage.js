@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
-import OrdersDisplay from './ordersDisplay';
+import OrdersDisplay from './orders_table_elements/ordersDisplay';
 
 const AdminPage = () => {
   const { logout, user } = useAuth();
