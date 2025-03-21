@@ -275,7 +275,6 @@ app.post('/setiban', async (req, res) => {
             const values = [userID];
             const result1 = await pool.query(query1, values); 
             var user = result1.rows[0]
-            console.log(user)
             const irisUser = await signupAgent(process.env.IRISAGENTHASH, null, null, user.firstname, null, user.lastname, null, user.email, null)
             const banks = await getBanks(irisUser.userHash, null)
             const irisBank = banks.find(b => b.name.toLowerCase() === bank.toLowerCase())

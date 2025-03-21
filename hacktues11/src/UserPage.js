@@ -160,7 +160,7 @@ const UserPage = () => {
     }
   }
 
-  const handleIbanSubmit = () => {
+  const handleIbanSubmit = async () => {
     console.log("entered");
     const ibanPattern = /^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$/;
     if (!ibanPattern.test(iban)) {
@@ -169,7 +169,26 @@ const UserPage = () => {
       alert('Моля въведете име на банка')
     }
     else {
-      // Your function to process the IBAN here
+      try {
+        const token = localStorage.getItem("authToken")
+
+        const response = await fetch('http://localhost:5000/setiban', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({token, iban, bank}),
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data)
+        } else {
+          console.error('Failed to upload card');
+        }
+      } catch (error) {
+        console.error('Error uploading card:', error);
+      }
       setShowAddIbanPopup(false);
     }
   };
