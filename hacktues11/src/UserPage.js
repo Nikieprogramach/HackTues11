@@ -155,8 +155,8 @@ const UserPage = () => {
 
   const handleSaveCard = async () => {
     if (newCard.digits.length === 4 && 
-      newCard.firstName ===  JSON.parse(localStorage.getItem("user")).firstname && 
-      newCard.lastName === JSON.parse(localStorage.getItem("user")).lastname
+      newCard.firstname ===  JSON.parse(localStorage.getItem("user")).firstname && 
+      newCard.lastname === JSON.parse(localStorage.getItem("user")).lastname
     ) {
       const token = localStorage.getItem("authToken")
       const firstname = JSON.parse(localStorage.getItem("user")).firstname; 
