@@ -203,6 +203,29 @@ app.post('/getpurchaseswithcard', async (req, res) => {
     }
 });
 
+app.post('/getusercards', async (req, res) => {
+    const {
+        token
+    } = req.body;
+    try{
+        const query = `SELECT * FROM authtokens WHERE token = $1 AND CURRENT_TIMESTAMP < expires_at`;
+        const values = [token];
+        const result = await pool.query(query, values);
+        if (result.rows.length > 0) {
+            const query1 = `SELECT * FROM users WHERE id = $1`;
+            const userID = result.rows[0].user_id
+            const values = [userID];
+            const result1 = await pool.query(query1, values); 
+            if (result1.rows.length > 0) {
+                res.json(result1.rows[0].cards)
+            }
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Failed to get payments" });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
