@@ -131,10 +131,11 @@ button:disabled {
 
 
 .timespan-selector {
-  margin-top: 100px;
   display: flex;
+  margin-top: 100px;
   gap: 10px;
-  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .timespan-selector label {
@@ -149,13 +150,15 @@ button:disabled {
 }
 
 .content {
-  margin-top: 20px;
-  width: 80%;
+  width: 95%;
+  margin: 20px auto;
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; 
+  table-layout: fixed;
 }
 
 table th, table td {
@@ -176,6 +179,17 @@ table th {
 table tbody tr.sub-row td:first-child,
 table tbody tr.sub-row td:nth-child(2) {
   border-top: 2px solid #cbcbcb80; 
+}
+
+@media (max-width: 768px) {
+  .content {
+    width: 100%; 
+    margin: 10px 0; 
+  }
+
+  table th, table td {
+    padding: 6px;
+  }
 }
 
 .fade-in {
