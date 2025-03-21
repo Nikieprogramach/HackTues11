@@ -34,7 +34,7 @@ const UserPage = () => {
         navigate("/login")
       }
     } else {
-      navigate("/seeker/login");
+      navigate("/login");
     }
   };
   
