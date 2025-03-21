@@ -184,7 +184,7 @@ const UserPage = () => {
     <div className="user-page">
       <div className="top-bar">
         <div className="welcome-message">
-          Welcome {user?.firstname} {user?.lastname}!
+           Добре дошли {JSON.parse(localStorage.getItem("user")).firstname} {JSON.parse(localStorage.getItem("user")).lastname}!
         </div>
         <button className="logout-button" onClick={handleLogout}>
           Излизане от акаунта
