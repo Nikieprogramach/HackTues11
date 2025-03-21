@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { useAuth } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
 import OrdersDisplay from './ordersDisplay';
 
 const AdminPage = () => {
+  const { logout, user } = useAuth();
   const [hasSearched, setHasSearched] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -111,12 +113,19 @@ const AdminPage = () => {
     }
   }, [fromDate, toDate]);
 
+  const handleLogout = () => {
+    logout();
+  };
+  
   return (
     <div className="App">
       <div className={`header ${hasSearched ? 'fade-out' : ''}`}>
         <h1>NAPI</h1>
         <h2>Администратор</h2>
       </div>
+      <button className={`logout-button ${hasSearched ? 'fade-in' : ''}`} onClick={handleLogout}>
+          Излизане от акаунта
+      </button>
       <div className={`search-bar ${hasSearched ? 'search-bar-top' : 'search-bar-center'}`}>
         <input
           type="text"
