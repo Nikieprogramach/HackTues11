@@ -11,7 +11,8 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
   if (!user) {
     return <Navigate to="/login" />;
   }
-
+  console.log("1");
+  console.log(allowedRoles.includes(user.privileges));
   return allowedRoles.includes(user.privileges) ? children : <Navigate to="/unauthorized" />;
 };
 
