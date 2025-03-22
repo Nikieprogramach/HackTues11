@@ -151,6 +151,7 @@ input[type = "text"] {
   border-radius: 4px;
   cursor: pointer;
   opacity: 0;
+  z-index: 100;
 }
 
 button {

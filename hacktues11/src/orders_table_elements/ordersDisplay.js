@@ -5,6 +5,10 @@ import Order from './order';
 
 const OrdersDisplay = (props) => {
     const [orders, setOrders] = useState(props.orders);
+    var totalcost = 0
+    orders.map(order => {
+        totalcost += parseFloat(order.amount)
+    })
     return(
         <div className={`content ${props.hasSearched ? 'fade-in' : ''}`}>
             <table>
@@ -27,6 +31,9 @@ const OrdersDisplay = (props) => {
                         <td colSpan="5">No results found.</td>
                     </tr>
                 )}
+                <tr>
+                    <td colSpan="5"><strong>Общо: {totalcost.toFixed(2)}</strong></td>
+                </tr>
                 </tbody>
             </table>
         </div>
